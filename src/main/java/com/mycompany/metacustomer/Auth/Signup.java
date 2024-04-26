@@ -9,11 +9,15 @@ import com.mycompany.metacustomer.Utility.APIs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,9 +30,57 @@ public class Signup extends javax.swing.JPanel {
     /**
      * Creates new form Signup
      */
+    Vector<String> selectableServerUrl;
+
+    String getData() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .build();
+        String url = APIs.SERVER_JSON;
+
+        Request request = new Request.Builder()
+                .url(url).build();
+
+        Call call = client.newCall(request);
+
+        try {
+            Response res = call.execute();
+            System.out.println("res: " + res.message());
+            String body = res.body().string();
+            System.out.println("body:  " + body);
+            return body;
+        } catch (IOException e) {
+            System.out.println("Runtime error: deals");
+            System.out.println("e" + e);
+            return "[]";
+        }
+    }
+
     public Signup() {
         initComponents();
-        signup();
+        String apiData = getData();
+        System.out.println(apiData);
+        try {
+
+            JSONArray serverJSON = new JSONArray(apiData);
+            selectableServerUrl = new Vector<>();
+            Vector<String> selectableServerUrl = new Vector<>();
+            for (int i = 0; i < serverJSON.length(); i++) {
+                try {
+                    JSONObject jso = serverJSON.getJSONObject(i);
+                    String name = jso.getString("name");
+                    String ip = jso.getString("IPADDRESS");
+                    this.selectableServerUrl.add(name);
+                    selectableServerUrl.add(ip);
+                } catch (JSONException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            DefaultComboBoxModel model = new DefaultComboBoxModel(this.selectableServerUrl);
+            jComboBox1.setModel(model);
+            signup();
+        } catch (JSONException ex) {
+        }
+
     }
 
     void signup() {
@@ -111,6 +163,8 @@ public class Signup extends javax.swing.JPanel {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         jLabel1.setText("USERID : ");
 
@@ -128,6 +182,8 @@ public class Signup extends javax.swing.JPanel {
             }
         });
 
+        jLabel4.setText("Server:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,22 +191,23 @@ public class Signup extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel1)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel2)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField1))))
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel3))
+                            .addComponent(jLabel2))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField1)
+                    .addComponent(jTextField2)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(91, 91, 91)
@@ -160,7 +217,11 @@ public class Signup extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -174,7 +235,7 @@ public class Signup extends javax.swing.JPanel {
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addContainerGap(108, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -185,9 +246,11 @@ public class Signup extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;

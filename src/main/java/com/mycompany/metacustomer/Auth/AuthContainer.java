@@ -4,24 +4,51 @@
  */
 package com.mycompany.metacustomer.Auth;
 
+import com.mycompany.metacustomer.Metacustomer;
+import com.mycompany.metacustomer.Utility.APIs;
 import java.awt.BorderLayout;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JTabbedPane;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
  * @author kapilrohilla
  */
 public class AuthContainer extends javax.swing.JFrame {
+
     public static AuthContainer abc;
+
     /**
      * Creates new form AuthContainer
      */
+    JSONArray resJSON;
+
     public AuthContainer() {
         initComponents();
-        abc=this;
-        tabbedPane();
+        abc = this;
+
         setSize(500, 400);
         setLocationRelativeTo(null);
+//        String responseData = getData();
+//        try {
+//            resJSON = new JSONArray(responseData);
+            tabbedPane();
+//        } catch (JSONException ex) {
+//            System.out.println(ex.getMessage());
+//        }
+
     }
 
     final void tabbedPane() {
@@ -43,7 +70,7 @@ public class AuthContainer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

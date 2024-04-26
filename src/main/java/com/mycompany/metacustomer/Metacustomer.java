@@ -85,6 +85,7 @@ public class Metacustomer extends JFrame {
 //        String[] splitedUrl = Metacustomer.HomeChartUrl.split("time=");
 //        splitedUrl[1] = timeInMinute;
         String newUrl = HomeChartUrl + "&symbol=" + symbol + "&time=" + timeInMinute;
+
 //        HomeChartUrl = newUrl;
 //        System.out.println("Url: " + HomeChartUrl);
 //        HomeChartPanel.browser.navigation().loadUrl(newUrl);
@@ -103,6 +104,7 @@ public class Metacustomer extends JFrame {
         } else {
             Metacustomer.loginToken = token;
             HomeChartUrl += token;
+            System.out.println("HOMEChart: " + HomeChartUrl);
             Socket socket = null;
             try {
                 socket = IO.socket(APIs.BASE_URL);
@@ -432,9 +434,9 @@ public class Metacustomer extends JFrame {
         JMenuItem a8 = new JMenuItem("Print Preview");
         JMenuItem a9 = new JMenuItem("Print Setup");
         JMenuItem a10 = new JMenuItem("Open an Account");
-        JMenuItem a11 = new JMenuItem("Login to Trade Account");
-        JMenuItem a12 = new JMenuItem("Login to Web Trader");
-        JMenuItem a14 = new JMenuItem("Login to MQL5. Community");
+//        JMenuItem a11 = new JMenuItem("Login to Trade Account");
+//        JMenuItem a12 = new JMenuItem("Login to Web Trader");
+//        JMenuItem a14 = new JMenuItem("Login to MQL5. Community");
         JMenuItem a13 = new JMenuItem("Exit");
 
         JMenuItem a1a = new JMenuItem("EURUSD");
@@ -582,9 +584,9 @@ public class Metacustomer extends JFrame {
         jMenu1.add(a9);
         jMenu1.addSeparator();
         jMenu1.add(a10);
-        jMenu1.add(a11);
-        jMenu1.add(a12);
-        jMenu1.add(a14);
+//        jMenu1.add(a11);
+//        jMenu1.add(a12);
+//        jMenu1.add(a14);
         jMenu1.addSeparator();
         jMenu1.add(a13);
 
@@ -595,12 +597,12 @@ public class Metacustomer extends JFrame {
 
         JMenuItem b1 = new JMenuItem("New Order");
         JMenuItem b2 = new JMenuItem("Strategy Tester Agents Manager");
-        JMenuItem b3 = new JMenuItem("MetaQuotes Language Editor");
+//        JMenuItem b3 = new JMenuItem("MetaQuotes Language Editor");
         JMenuItem b4 = new JMenuItem("Task Manager");
         JMenuItem b5 = new JMenuItem("Global Variables");
-        JMenuItem b6 = new JMenuItem("MQL5 Market");
-        JMenuItem b7 = new JMenuItem("MQL5 Signals");
-        JMenuItem b8 = new JMenuItem("MQL5 Virtual Hosting");
+//        JMenuItem b6 = new JMenuItem("MQL5 Market");
+//        JMenuItem b7 = new JMenuItem("MQL5 Signals");
+//        JMenuItem b8 = new JMenuItem("MQL5 Virtual Hosting");
         JMenuItem b9 = new JMenuItem("Options");
 
         b1.addActionListener((ActionEvent e) -> {
@@ -610,13 +612,13 @@ public class Metacustomer extends JFrame {
         jMenu2.add(b1);
         jMenu2.addSeparator();
         jMenu2.add(b2);
-        jMenu2.add(b3);
+//        jMenu2.add(b3);
         jMenu2.add(b4);
         jMenu2.add(b5);
         jMenu2.addSeparator();
-        jMenu2.add(b6);
-        jMenu2.add(b7);
-        jMenu2.add(b8);
+//        jMenu2.add(b6);
+//        jMenu2.add(b7);
+//        jMenu2.add(b8);
         jMenu2.add(b9);
 
         JMenu c1 = new JMenu("Languages");
@@ -936,7 +938,7 @@ public class Metacustomer extends JFrame {
 //            System.out.println(ex.getMessage());
 //        }
 
-        setTitle("Customer App");
+        setTitle("Rapid Trader");
         menubarsetup();
         menusetup();
         toolbar();

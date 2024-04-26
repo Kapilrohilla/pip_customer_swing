@@ -10,7 +10,7 @@ package com.mycompany.metacustomer.Utility;
  */
 public class APIs {
 
-    public static String BASE_URL = "http://35.154.68.218:8080/";
+    public static String BASE_URL = "http://93.127.172.153:8080/";
 
     public static String LOGIN_URL = BASE_URL + "login";
 
@@ -50,4 +50,5 @@ public class APIs {
 
     public static String GET_CLOSED_POSITION = BASE_URL + "get-closed-positions";
 
+    public static String SERVER_JSON = "https://rapidtrader.net/livesrvr/bfrehh34/kbhirr3ke/baselilerigh.json";
 }
