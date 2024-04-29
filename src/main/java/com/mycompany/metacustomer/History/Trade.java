@@ -70,6 +70,7 @@ public class Trade extends javax.swing.JPanel {
             table();
             try {
 //                copiedSocket();
+                setData();
                 listenGetOrderEvent();
                 listenPosData();
                 listenPosProfit();
@@ -272,6 +273,46 @@ public class Trade extends javax.swing.JPanel {
                 }
             }
         });
+    }
+
+    final String getUserData() {
+        OkHttpClient client = new OkHttpClient();
+        String url = APIs.USER;
+        System.out.println(url);
+        String token = Metacustomer.loginToken;
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", token)
+                .build();
+        Call call = client.newCall(request);
+
+        try {
+            Response res = call.execute();
+            return res.body().string();
+        } catch (IOException e) {
+            System.out.println("Error occurred while fetching trading account specific overview");
+            return "";
+        }
+    }
+
+    final void setData() {
+        String apiData = getUserData();
+        System.out.println("apiData: " + apiData);
+        try{
+            JSONObject jso = new JSONObject(apiData);
+            JSONObject userData = jso.getJSONObject("user");
+            double balance = userData.getDouble("balance");
+            double credit = userData.getDouble("credit");
+            double margin = userData.getDouble("margin");
+//            System.out.println("credit: " + credit + "margin: " + margin);
+            jLabel6.setText(credit + "");
+            jLabel8.setText(margin + "");
+            jLabel2.setText(balance + "");
+        }catch(JSONException ex){
+            System.out.println(ex.getMessage());
+        }
+        
+        
     }
 
     public static void updateData() {

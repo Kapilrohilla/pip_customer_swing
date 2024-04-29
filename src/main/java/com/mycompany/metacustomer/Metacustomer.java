@@ -73,14 +73,14 @@ public class Metacustomer extends JFrame {
     public static String userId;
     static public String loginToken;
     JSplitPane jSplitPane1;
-
-//    static public String loginToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTliYTdhMTRiNGQyZmEzMDU4ZDM5ZWMiLCJpYXQiOjE3MDU2NTgyMTcsImV4cCI6MTcwNjI2MzAxN30.qL2Z2gEWcaKEjmpxJl-yR__bs9hEC5_3EdOzw33C8po";
+    
     static public String HomeChartUrl = APIs.CHART + "?token=";
     static public String symbol = "XAUUSD";
     static public String time = "1";
     static public String type = "candle";
     public static String bal;
-
+    public static String groupCategory;
+    
     private void updateChartBaseTime(String timeInMinute) {
 //        String[] splitedUrl = Metacustomer.HomeChartUrl.split("time=");
 //        splitedUrl[1] = timeInMinute;
@@ -334,6 +334,7 @@ public class Metacustomer extends JFrame {
             JSONObject user = js.getJSONObject("user");
             bal = user.getString("balance");
             userId = user.getString("_id");
+            groupCategory = user.getString("HCategory");
             JSONObject jso = new JSONObject();
             jso.put("userId", Metacustomer.userId);
             System.out.println("userpositions payload: " + jso);
@@ -425,6 +426,7 @@ public class Metacustomer extends JFrame {
         JMenu a1 = new JMenu("New Chart");
 
         JMenuItem a2 = new JMenuItem("Profiles");
+        JMenuItem a11 = new JMenuItem("My Profile");
         JMenuItem a3 = new JMenuItem("Close");
         JMenuItem a4 = new JMenuItem("Save");
         JMenuItem a5 = new JMenuItem("Save as Picture");
@@ -437,7 +439,7 @@ public class Metacustomer extends JFrame {
 //        JMenuItem a11 = new JMenuItem("Login to Trade Account");
 //        JMenuItem a12 = new JMenuItem("Login to Web Trader");
 //        JMenuItem a14 = new JMenuItem("Login to MQL5. Community");
-        JMenuItem a13 = new JMenuItem("Exit");
+        JMenuItem a13 = new JMenuItem("Logout");
 
         JMenuItem a1a = new JMenuItem("EURUSD");
         JMenuItem a1b = new JMenuItem("GBPUSD");
@@ -474,7 +476,11 @@ public class Metacustomer extends JFrame {
                 Logger.getLogger(Metacustomer.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-
+        
+        a11.addActionListener(((e) -> {
+            new Profile().setVisible(true);
+            
+        }));
         a1a.addActionListener((ActionEvent e) -> {
             String initialUrl = Metacustomer.HomeChartUrl;
             String[] initialUrlSymBreak = initialUrl.split("symbol=");
@@ -571,6 +577,7 @@ public class Metacustomer extends JFrame {
 
         jMenu1.add(a1);
         jMenu1.add(a2);
+        jMenu1.add(a11);
         jMenu1.add(a3);
         jMenu1.add(a4);
 
