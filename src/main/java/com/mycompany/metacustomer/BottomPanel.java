@@ -54,7 +54,7 @@ public class BottomPanel extends javax.swing.JPanel {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
-//        String url = APIs.GET_CLOSED_POSITION;
+        
         String token = Metacustomer.loginToken;
         if (token == null) {
             System.out.println("token not found token: " + token);
@@ -108,6 +108,9 @@ public class BottomPanel extends javax.swing.JPanel {
             public void stateChanged(ChangeEvent e) {
                 int positionTabIndex = tabbedPane.getSelectedIndex();
                 switch (positionTabIndex) {
+                    case 0:
+                        System.out.println("Trade");
+                        break;
                     case 1:
                         System.out.println("positons");
                         try {

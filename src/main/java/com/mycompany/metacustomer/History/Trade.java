@@ -11,8 +11,6 @@ import static com.mycompany.metacustomer.Metacustomer.bal;
 import com.mycompany.metacustomer.OrderFrame;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import java.awt.BorderLayout;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,18 +19,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import okhttp3.Call;
-import okhttp3.EventListener;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -69,7 +62,6 @@ public class Trade extends javax.swing.JPanel {
         try {
             table();
             try {
-//                copiedSocket();
                 setData();
                 listenGetOrderEvent();
                 listenPosData();
@@ -249,7 +241,7 @@ public class Trade extends javax.swing.JPanel {
             @Override
             public void call(Object... os) {
                 JSONObject posProfit = (JSONObject) os[0];
-
+                System.out.println("posProfit: " + posProfit);
                 try {
 //                    System.out.println("posProfit: " + posProfit);
                     double profit = posProfit.getDouble("profit");
@@ -298,21 +290,23 @@ public class Trade extends javax.swing.JPanel {
     final void setData() {
         String apiData = getUserData();
         System.out.println("apiData: " + apiData);
-        try{
+        try {
             JSONObject jso = new JSONObject(apiData);
             JSONObject userData = jso.getJSONObject("user");
             double balance = userData.getDouble("balance");
             double credit = userData.getDouble("credit");
             double margin = userData.getDouble("margin");
-//            System.out.println("credit: " + credit + "margin: " + margin);
+            String user_id = userData.getString("email");
+            System.out.println(":::::::::::::::::::::");
+            System.out.println("user_id:  " + user_id);
+            System.out.println(":::::::::::::::::::::");
             jLabel6.setText(credit + "");
             jLabel8.setText(margin + "");
             jLabel2.setText(balance + "");
-        }catch(JSONException ex){
+        } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
-        
-        
+
     }
 
     public static void updateData() {

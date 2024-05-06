@@ -40,7 +40,7 @@ public class Deals extends javax.swing.JPanel {
             Logger.getLogger(Deals.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     String getData() {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -55,13 +55,13 @@ public class Deals extends javax.swing.JPanel {
         if (token == null) {
             return "";
         }
-        
+
         Request request = new Request.Builder()
                 .url(url)
                 .header("Authorization", token)
                 .build();
         Call call = client.newCall(request);
-        
+
         try {
             Response res = call.execute();
             System.out.println("res: " + res.message());
@@ -72,13 +72,13 @@ public class Deals extends javax.swing.JPanel {
             return "";
         }
     }
-    
+
     final void tableData() throws JSONException {
         DefaultTableModel model = new DefaultTableModel();
         String apiData = getData();
-        System.out.println("apidata"+apiData);
+        System.out.println("apidata" + apiData);
         JSONArray jsnArray = new JSONArray(apiData);
-        String[] columns = {"userId", "Ticket", "Symbol", "Volume", "Status", "StopLoss", "TakeProfit", "profit"};
+        String[] columns = {"Ticket", "Symbol", "Volume", "Status", "StopLoss", "TakeProfit", "Profit"};
         for (String column : columns) {
             model.addColumn(column);
         }
@@ -88,7 +88,6 @@ public class Deals extends javax.swing.JPanel {
         for (int i = 0; i < jsnArray.length(); i++) {
             JSONObject jso = jsnArray.getJSONObject(i);
             System.out.println("deal's jso: " + jso);
-            String user_id = jso.getString("user_id");
             String symbol = jso.getString("symbol");
             String ticket = jso.getString("ticket");
             String volume = jso.getDouble("volume") + "";
@@ -115,7 +114,7 @@ public class Deals extends javax.swing.JPanel {
             String stopLoss;
             try {
                 stopLoss = jso.getString("stopLoss");
-                
+
                 if (stopLoss == "null") {
                     stopLoss = "";
                 }
@@ -126,18 +125,18 @@ public class Deals extends javax.swing.JPanel {
             if (takeProfit == "null") {
                 takeProfit = "";
             }
-            String[] rowData = {user_id, ticket, symbol, volume, statusText, stopLoss, takeProfit, String.format("%.2f", profit)};
-            
+            String[] rowData = {ticket, symbol, volume, statusText, stopLoss, takeProfit, String.format("%.2f", profit)};
+
             model.addRow(rowData);
         }
-        
+
         JLabel topLabel = new JLabel();
-        
+
         setLayout(new BorderLayout());
         JTable jt = new JTable(model);
         jt.setAutoCreateRowSorter(true);
         topLabel.setText(String.format("Profit: %.2f,  Comission: %.2f, Profit: %.2f ", totalProfit, totalCommission, totalSwap));
-        
+
         JScrollPane scrollPane = new JScrollPane(jt);
         add(topLabel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);

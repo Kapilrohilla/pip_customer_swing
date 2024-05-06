@@ -75,7 +75,7 @@ public class Order extends javax.swing.JPanel {
         String apiData = getData();
 
         orderDataJSNArr = new JSONArray(apiData);
-        String[] columns = {"userId", "Symbol", "CurrentPrice", "Status", "StopLoss", "TakeProfit"};
+        String[] columns = {"Ticket", "Symbol", "CurrentPrice", "Status", "StopLoss", "TakeProfit"};
         for (String column : columns) {
             model.addColumn(column);
         }
@@ -85,18 +85,13 @@ public class Order extends javax.swing.JPanel {
         jt.setAutoCreateRowSorter(true);
         topLabel = new JLabel();
         orderDataJSNArr = new JSONArray(apiData);
-//        orderDataJSNArr = new JSONArray();
         totalOrder = orderDataJSNArr.length();
         System.out.println("total: " + totalOrder);
         totalCancelled = 0;
-//        int rowCount = model.getRowCount();
-//        for (int i = 0; i < rowCount; i++) {
-//            model.removeRow(i);
-//        }
         try {
             for (int i = 0; i < orderDataJSNArr.length(); i++) {
                 JSONObject jso = orderDataJSNArr.getJSONObject(i);
-                String user_id = jso.getString("user_id");
+                String ticket = jso.getString("ticket");
                 String symbol = jso.getString("symbol");
                 String currentPrice = jso.getString("currentPrice");
                 int status = jso.getInt("status");
@@ -112,7 +107,7 @@ public class Order extends javax.swing.JPanel {
                     takeProfit = "";
                 }
 
-                String[] rowData = {user_id, symbol, currentPrice, status == 1 ? "Filled" : "Cancelled", stopLoss, takeProfit};
+                String[] rowData = {ticket, symbol, currentPrice, status == 1 ? "Filled" : "Cancelled", stopLoss, takeProfit};
                 model.addRow(rowData);
 
             }

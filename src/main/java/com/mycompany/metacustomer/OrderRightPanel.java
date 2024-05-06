@@ -4,9 +4,8 @@
  */
 package com.mycompany.metacustomer;
 
-import com.mycompany.metacustomer.History.Trade;
 import com.mycompany.metacustomer.Utility.APIs;
-import io.socket.client.Ack;
+
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import java.awt.event.ActionEvent;
@@ -15,16 +14,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import javax.swing.JSpinner;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -45,7 +39,7 @@ public class OrderRightPanel extends javax.swing.JPanel {
     boolean isStopLossFirstChange = false;
     boolean isTakeProfitFirstChange = false;
     String selectedSymbol;
-    boolean isPriceFirstChange = false;
+    boolean isPriceFirstChange = true;
 
     public OrderRightPanel() {
         initComponents();
@@ -54,7 +48,7 @@ public class OrderRightPanel extends javax.swing.JPanel {
         jLabel9.setText("0.00 / 0.00");
 
         this.selectedSymbol = jComboBox1.getSelectedItem().toString();
-
+        
         socket = Metacustomer.socket;
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
@@ -75,18 +69,18 @@ public class OrderRightPanel extends javax.swing.JPanel {
                         String ask = response.getString("ask");
                         bid = String.format("%.2f", Double.parseDouble(bid));
                         ask = String.format("%.2f", Double.parseDouble(ask));
-                        if (isStopLossFirstChange == false) {
-                            jSpinner2.setValue((double) Double.parseDouble(ask));
-                            isStopLossFirstChange = true;
-                        }
-                        if (isTakeProfitFirstChange == false) {
-                            jSpinner3.setValue((double) Double.parseDouble(ask));
-                            isTakeProfitFirstChange = true;
-                        }
-                        if (isPriceFirstChange == false) {
-                            jSpinner4.setValue((double) Double.parseDouble(ask));
-                            isPriceFirstChange = true;
-                        }
+//                        if (isStopLossFirstChange == false) {
+//                            jSpinner2.setValue((double) Double.parseDouble(ask));
+//                            isStopLossFirstChange = true;
+//                        }
+//                        if (isTakeProfitFirstChange == false) {
+//                            jSpinner3.setValue((double) Double.parseDouble(ask));
+//                            isTakeProfitFirstChange = true;
+//                        }
+//                        if (isPriceFirstChange == false) {
+//                            jSpinner4.setValue((double) Double.parseDouble(ask));
+//                            isPriceFirstChange = true;
+//                        }
                         jLabel9.setText(bid + " / " + ask);
                     }
                 } catch (JSONException ex) {

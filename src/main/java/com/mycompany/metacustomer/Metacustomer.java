@@ -5,51 +5,30 @@ package com.mycompany.metacustomer;
 
 import com.mycompany.metacustomer.Utility.APIs;
 import com.mycompany.metacustomer.Auth.AuthContainer;
-import com.mycompany.metacustomer.CandlestickDemo2;
 import com.mycompany.metacustomer.History.Trade;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Label;
-import java.awt.TextField;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,22 +52,16 @@ public class Metacustomer extends JFrame {
     public static String userId;
     static public String loginToken;
     JSplitPane jSplitPane1;
-    
+
     static public String HomeChartUrl = APIs.CHART + "?token=";
     static public String symbol = "XAUUSD";
     static public String time = "1";
     static public String type = "candle";
     public static String bal;
     public static String groupCategory;
-    
-    private void updateChartBaseTime(String timeInMinute) {
-//        String[] splitedUrl = Metacustomer.HomeChartUrl.split("time=");
-//        splitedUrl[1] = timeInMinute;
-        String newUrl = HomeChartUrl + "&symbol=" + symbol + "&time=" + timeInMinute;
 
-//        HomeChartUrl = newUrl;
-//        System.out.println("Url: " + HomeChartUrl);
-//        HomeChartPanel.browser.navigation().loadUrl(newUrl);
+    private void updateChartBaseTime(String timeInMinute) {
+        String newUrl = HomeChartUrl + "&symbol=" + symbol + "&time=" + timeInMinute;
         MainFrame.browser_.loadURL(newUrl);
     }
     public static Socket socket;
@@ -247,51 +220,12 @@ public class Metacustomer extends JFrame {
 
         ideBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-//                System.out.println("It works");
-//            String initialUrl = Metacustomer.HomeChartUrl;
-//            String[] initialUrlTypeBreak = initialUrl.split("type=");
-//            String[] initialUrlTypeBreakRightBreak = initialUrlTypeBreak[1].split("&");
-//            initialUrlTypeBreakRightBreak[0] = "bar";
-//            initialUrlTypeBreak[1] = String.join("&", initialUrlTypeBreakRightBreak);
-//            initialUrl = String.join("type=", initialUrlTypeBreak);
-//            System.out.println("URL: " + initialUrl);
-//            Metacustomer.HomeChartUrl = initialUrl;
-
                 type = "bar";
                 String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
                 rightPanel.browser_.loadURL(newURL);
             }
         });
-//        ideBtn.setForeground(Color.BLUE);
-
-//        toolBar.add();
-//        toolBar.add(hamburgerBtn);
-//        toolBar.add(talternateBtn);
-//        toolBar.add(shapesBtn);
-//        toolBar.addSeparator();
-//        JButton refresh = new JButton("Refresh");
-//        toolBar.add(refresh);
-//        toolBar.add(m1);
-//        toolBar.add(m5);
-//        toolBar.add(m15);
-//        toolBar.add(h1);
-//        toolBar.add(h4);
-//        toolBar.add(d1);
-//        toolBar.add(w1);
-//        toolBar.add(mn);
-//        toolBar.addSeparator();
-//        
-//        toolBar.add(addsymbol);
-//        toolBar.add(deletesymbol);
-//        toolBar.add(dollorBtn);
-//        toolBar.add(ideBtn);
-//        toolBar.add(algoTradingBtn);
-//        toolBar.add(candle);
         toolBar.add(newOrderBtn);
-//        toolBar.add(zoomBtn);
-//        toolBar.add(zoomOutBtn);
-//        toolBar.add(boxBtn);
-//        toolBar.add(searchBtn);
 
         toolBar.add(balance);
         toolBar.add(equity);
@@ -300,12 +234,6 @@ public class Metacustomer extends JFrame {
         toolBar.add(freemargin);
         toolBar.add(level);
 
-//        refresh.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent ae) {
-//                jSplitPane1.setBottomComponent(new BottomPanel());
-//            }
-//        });
-//        
         addsymbol.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -334,13 +262,14 @@ public class Metacustomer extends JFrame {
             JSONObject user = js.getJSONObject("user");
             bal = user.getString("balance");
             userId = user.getString("_id");
-            groupCategory = user.getString("HCategory");
+            try {groupCategory = user.getString("HCategory");} catch (JSONException ex) {}
+
             JSONObject jso = new JSONObject();
             jso.put("userId", Metacustomer.userId);
-            System.out.println("userpositions payload: " + jso);
+//            System.out.println("userpositions payload: " + jso);
             Metacustomer.socket.emit("userpositions", jso);
             System.out.println("User is live now..");
-        } catch (Exception e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -436,9 +365,6 @@ public class Metacustomer extends JFrame {
         JMenuItem a8 = new JMenuItem("Print Preview");
         JMenuItem a9 = new JMenuItem("Print Setup");
         JMenuItem a10 = new JMenuItem("Open an Account");
-//        JMenuItem a11 = new JMenuItem("Login to Trade Account");
-//        JMenuItem a12 = new JMenuItem("Login to Web Trader");
-//        JMenuItem a14 = new JMenuItem("Login to MQL5. Community");
         JMenuItem a13 = new JMenuItem("Logout");
 
         JMenuItem a1a = new JMenuItem("EURUSD");
@@ -476,10 +402,10 @@ public class Metacustomer extends JFrame {
                 Logger.getLogger(Metacustomer.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         a11.addActionListener(((e) -> {
             new Profile().setVisible(true);
-            
+
         }));
         a1a.addActionListener((ActionEvent e) -> {
             String initialUrl = Metacustomer.HomeChartUrl;
