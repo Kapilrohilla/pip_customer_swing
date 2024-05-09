@@ -75,7 +75,7 @@ public class Order extends javax.swing.JPanel {
         String apiData = getData();
 
         orderDataJSNArr = new JSONArray(apiData);
-        String[] columns = {"Ticket", "Symbol", "CurrentPrice", "Status", "StopLoss", "TakeProfit"};
+        String[] columns = {"Ticket", "Symbol", "Time", "CurrentPrice", "Status", "StopLoss", "TakeProfit", "Volume"};
         for (String column : columns) {
             model.addColumn(column);
         }
@@ -86,7 +86,6 @@ public class Order extends javax.swing.JPanel {
         topLabel = new JLabel();
         orderDataJSNArr = new JSONArray(apiData);
         totalOrder = orderDataJSNArr.length();
-        System.out.println("total: " + totalOrder);
         totalCancelled = 0;
         try {
             for (int i = 0; i < orderDataJSNArr.length(); i++) {
@@ -97,6 +96,10 @@ public class Order extends javax.swing.JPanel {
                 int status = jso.getInt("status");
                 String stopLoss = jso.getString("stopLoss");
                 String takeProfit = jso.getString("takeProfit");
+                String time = jso.getString("createdAt");
+                double initialVolume = jso.getDouble("initialVolume");
+                double currentVolume = jso.getDouble("currentVolume");
+                double volume = currentVolume - initialVolume;
                 if (status == 0) {
                     totalCancelled++;
                 }
@@ -107,7 +110,7 @@ public class Order extends javax.swing.JPanel {
                     takeProfit = "";
                 }
 
-                String[] rowData = {ticket, symbol, currentPrice, status == 1 ? "Filled" : "Cancelled", stopLoss, takeProfit};
+                String[] rowData = {ticket, symbol, time, currentPrice, status == 1 ? "Filled" : "Cancelled", stopLoss, takeProfit, volume + ""};
                 model.addRow(rowData);
 
             }

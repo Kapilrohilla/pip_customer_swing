@@ -29,9 +29,6 @@ import org.json.JSONObject;
  */
 public class Deals extends javax.swing.JPanel {
 
-    /**
-     * Creates new form Deals
-     */
     public Deals() {
         initComponents();
         try {
@@ -48,9 +45,6 @@ public class Deals extends javax.swing.JPanel {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
         String url = APIs.GET_USER_DEALS;
-        // get-positions
-        // get-user-orders
-        // Create a Request object
         String token = Metacustomer.loginToken;
         if (token == null) {
             return "";
@@ -78,7 +72,7 @@ public class Deals extends javax.swing.JPanel {
         String apiData = getData();
         System.out.println("apidata" + apiData);
         JSONArray jsnArray = new JSONArray(apiData);
-        String[] columns = {"Ticket", "Symbol", "Volume", "Status", "StopLoss", "TakeProfit", "Profit"};
+        String[] columns = {"Ticket", "Symbol", "Order", "Time", "Type", "Direction", "Commission", "Volume", "Status", "StopLoss", "TakeProfit", "Profit"};
         for (String column : columns) {
             model.addColumn(column);
         }
@@ -94,6 +88,43 @@ public class Deals extends javax.swing.JPanel {
             int status = jso.getInt("status");
             String statusText = status == 1 ? "Fulfilled" : "Canceled";
             double profit = jso.getDouble("profit");
+            String order = jso.getString("order");
+            String time = jso.getString("createdAt");
+            int typeNum = jso.getInt("type");
+            String type;
+            switch (typeNum) {
+                case 0: {
+                    type = "Sell";
+                    break;
+                }
+                case 1: {
+                    type = "Buy";
+                    break;
+                }
+                case 2: {
+                    type = "Buy Limit";
+                    break;
+                }
+                case 3: {
+                    type = "Sell Limit";
+                    break;
+                }
+                case 4: {
+                    type = "Buy Stop";
+                    break;
+                }
+                case 5: {
+                    type = "Buy Stop Limit";
+                    break;
+                }
+                case 6: {
+                    type = "Sell Stop Limit";
+                    break;
+                }
+                default: {
+                    type = "Invalid Type";
+                }
+            }
             double swap;
             try {
                 swap = jso.getDouble("swap");
@@ -125,7 +156,29 @@ public class Deals extends javax.swing.JPanel {
             if (takeProfit == "null") {
                 takeProfit = "";
             }
-            String[] rowData = {ticket, symbol, volume, statusText, stopLoss, takeProfit, String.format("%.2f", profit)};
+            double commission;
+            try {
+                commission = jso.getDouble("comission");
+            } catch (JSONException ex) {
+                ex.getStackTrace();
+                commission = 0.0;
+            }
+
+            double price = 0.0;
+            try {
+                price = jso.getDouble("price");
+            } catch (Exception ex) {
+                ex.getStackTrace();
+            }
+            double fee;
+            try {
+                fee = jso.getDouble("fee");
+            } catch (Exception ex) {
+                fee = 0.0;
+            }
+//            fee = jso.getDouble("fee");
+
+            String[] rowData = {ticket, symbol, order, time, type, "", commission + "", volume, statusText, stopLoss, takeProfit, String.format("%.2f", profit)};
 
             model.addRow(rowData);
         }

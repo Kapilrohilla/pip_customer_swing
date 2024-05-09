@@ -99,6 +99,7 @@ public class Trade extends javax.swing.JPanel {
                         System.out.println(ex.getMessage());
                     }
                     JSONObject newPosition = getOrder.getJSONObject("position");
+                    System.out.println("newPositions: " + newPosition);
                     String symbol = newPosition.getString("symbol");
                     String ticket = newPosition.getString("ticket");
                     String time;
@@ -111,7 +112,40 @@ public class Trade extends javax.swing.JPanel {
 
                     String type;
                     try {
-                        type = newPosition.getInt("type") == 0 ? "Sell" : "Buy";
+                        int typeNum = newPosition.getInt("type");
+                        switch (typeNum) {
+                            case 0: {
+                                type = "Sell";
+                                break;
+                            }
+                            case 1: {
+                                type = "Buy";
+                                break;
+                            }
+                            case 2: {
+                                type = "Buy Limit";
+                                break;
+                            }
+                            case 3: {
+                                type = "Sell Limit";
+                                break;
+                            }
+                            case 4: {
+                                type = "Buy Stop";
+                                break;
+                            }
+                            case 5: {
+                                type = "Buy Stop Limit";
+                                break;
+                            }
+                            case 6: {
+                                type = "Sell Stop Limit";
+                                break;
+                            }
+                            default: {
+                                type = "Invalid Type";
+                            }
+                        }
                     } catch (JSONException ex) {
                         System.out.println(ex.getMessage());
                         type = "NULL";
@@ -178,7 +212,12 @@ public class Trade extends javax.swing.JPanel {
                     newRow.add(swap);
                     newRow.add(comment);
                     newRow.add("");
-                    newRow.add(profit);
+                    if (status == 1) {
+                        newRow.add(profit);
+                    } else {
+                        newRow.add("Placed");
+                    }
+//                    newRow.add(profit);
                     newRow.add(action);
                     model.addRow(newRow);
                     watchlistData.add(newPosition);
@@ -353,8 +392,41 @@ public class Trade extends javax.swing.JPanel {
                 JSONObject jso = jsa.getJSONObject(i);
 
                 String symbol = jso.getString("symbol");
-                String type = jso.getInt("type") == 0 ? "Sell" : "Buy";
-
+                String type;
+                int typeNum = jso.getInt("type");
+                switch (typeNum) {
+                    case 0: {
+                        type = "Sell";
+                        break;
+                    }
+                    case 1: {
+                        type = "Buy";
+                        break;
+                    }
+                    case 2: {
+                        type = "Buy Limit";
+                        break;
+                    }
+                    case 3: {
+                        type = "Sell Limit";
+                        break;
+                    }
+                    case 4: {
+                        type = "Buy Stop";
+                        break;
+                    }
+                    case 5: {
+                        type = "Buy Stop Limit";
+                        break;
+                    }
+                    case 6: {
+                        type = "Sell Stop Limit";
+                        break;
+                    }
+                    default: {
+                        type = "Invalid Type";
+                    }
+                }
                 String stopLoss;
                 String createdAt = jso.getString("createdAt");
 
@@ -402,7 +474,12 @@ public class Trade extends javax.swing.JPanel {
                 } catch (JSONException ex) {
                     comment = "";
                 }
-                String[] rowData = {symbol, ticket, createdAt, type, volume, price, stopLoss, takeProfit, swap, comment, "", "", "Close Position"};
+                int profitNum = jso.getInt("status");
+                String profit = "";
+                if (profitNum == 0) {
+                    profit = "Placed";
+                }
+                String[] rowData = {symbol, ticket, createdAt, type, volume, price, stopLoss, takeProfit, swap, comment, "", profit, "Close Position"};
                 watchlistData.add(jso);
                 model.addRow(rowData);
                 System.out.println("trade updated.");

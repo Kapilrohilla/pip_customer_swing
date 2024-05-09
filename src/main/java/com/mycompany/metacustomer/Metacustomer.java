@@ -257,12 +257,16 @@ public class Metacustomer extends JFrame {
         });
 
         String userdata = getData();
+        System.out.println("/user::::: " + userdata);
         try {
             JSONObject js = new JSONObject(userdata);
             JSONObject user = js.getJSONObject("user");
             bal = user.getString("balance");
             userId = user.getString("_id");
-            try {groupCategory = user.getString("HCategory");} catch (JSONException ex) {}
+            try {
+                groupCategory = user.getString("HCategory");
+            } catch (JSONException ex) {
+            }
 
             JSONObject jso = new JSONObject();
             jso.put("userId", Metacustomer.userId);

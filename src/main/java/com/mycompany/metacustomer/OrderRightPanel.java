@@ -48,7 +48,7 @@ public class OrderRightPanel extends javax.swing.JPanel {
         jLabel9.setText("0.00 / 0.00");
 
         this.selectedSymbol = jComboBox1.getSelectedItem().toString();
-        
+
         socket = Metacustomer.socket;
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
@@ -361,11 +361,11 @@ public class OrderRightPanel extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
 
-                    if (!validationforPendingOrders()) {
-                        return;
-                    }
+//                    if (!validationforPendingOrders()) {
+//                        return;
+//                    }
 
-                    String apiUrl = APIs.NEW_ORDER;
+//                    String apiUrl = APIs.NEW_ORDER;
                     String symbol = jComboBox1.getSelectedItem().toString();
                     String typeValue = jComboBox2.getSelectedItem().toString();
                     String typeValue2 = jComboBox4.getSelectedItem().toString();
@@ -405,26 +405,30 @@ public class OrderRightPanel extends javax.swing.JPanel {
                     jso.put("take_profit", take_profit);
                     jso.put("comment", comment);
                     jso.put("expiration", expiration);
+                    jso.put("token", Metacustomer.loginToken);
+
                     System.out.println("placeorderjson: " + jso);
-                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                    RequestBody body = RequestBody.create(JSON, jso.toString());
-                    Request request = new Request.Builder()
-                            .url(apiUrl)
-                            .post(body)
-                            .header("Authorization", Metacustomer.loginToken)
-                            .build();
-                    OkHttpClient client = new OkHttpClient();
-                    System.out.println(body);
-                    Response response = client.newCall(request).execute();
-                    System.out.println("Status: " + response.body().string());
-                    if (response.isSuccessful()) {
-                        System.out.println("Api hit successful");
-                        alert(true);
-                    } else {
-                        alert(false);
-                        System.out.println("Error: " + response.body().toString());
-                    }
-                } catch (JSONException | IOException ex) {
+
+//                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+//                    RequestBody body = RequestBody.create(JSON, jso.toString());
+//                    Request request = new Request.Builder()
+//                            .url(apiUrl)
+//                            .post(body)
+//                            .header("Authorization", Metacustomer.loginToken)
+//                            .build();
+//                    OkHttpClient client = new OkHttpClient();
+//                    System.out.println(body);
+//                    Response response = client.newCall(request).execute();
+                    socket.emit("newOrder", jso.toString());
+//                    System.out.println("Status: " + response.body().string());
+//                    if (response.isSuccessful()) {
+//                        System.out.println("Api hit successful");
+//                        alert(true);
+//                    } else {
+//                        alert(false);
+//                        System.out.println("Error: " + response.body().toString());
+//                    }
+                } catch (JSONException ex) {
                     alert(false);
                     Logger.getLogger(OrderRightPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
