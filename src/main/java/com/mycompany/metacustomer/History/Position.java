@@ -9,6 +9,7 @@ import static com.mycompany.metacustomer.History.Trade.model;
 import com.mycompany.metacustomer.Utility.APIs;
 import com.mycompany.metacustomer.Metacustomer;
 import com.mycompany.metacustomer.Utility.ApiServices;
+import com.mycompany.metacustomer.Utility.Helper;
 import com.sun.jdi.IntegerType;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -38,7 +39,7 @@ import org.json.JSONObject;
  * @author kapilrohilla
  */
 interface PositionInter {
-    
+
     void fetchNSetPositions();
 //    void intitializeTable();
 
@@ -53,27 +54,7 @@ public class Position extends javax.swing.JPanel {
     final JTable table = new JTable();
     public static JSONArray closedPositions = new JSONArray();
     public static DefaultTableModel model = new DefaultTableModel();
-    
-    double getJSONDouble(JSONObject json, String key) {
-        double toRet = 0.0;
-        try {
-            toRet = json.getDouble(key);
-        } catch (JSONException ex) {
-            System.out.println("Error: " + key + " not found, " + ex.getMessage());
-        }
-        return toRet;
-    }
-    
-    String getJSONString(JSONObject json, String key) {
-        String toRet = "";
-        try {
-            toRet = json.getString(key);
-        } catch (JSONException ex) {
-            System.out.println("Error: " + key + " not found, " + ex.getMessage());
-        }
-        return toRet;
-    }
-    
+
     public final void fetchNSetPositions() {
         ApiServices services = new ApiServices();
         String url = APIs.GET_CLOSED_POSITION;
@@ -89,55 +70,40 @@ public class Position extends javax.swing.JPanel {
             System.out.println("Error: " + ex.getMessage());
         }
     }
-    
+
     public final void setupTable() {
-        
+
         String[] columns = {"Time", "Symbol", "Ticket", "Type", "Volume", "Price", "S/L", "T/P", "Closing Time", "Close Price", "Commission", "Fee", "Swap", "Change", "Profit", "Comment"};
-        
+
         for (int i = 0; i < columns.length; i++) {
             model.addColumn(columns[i]);
         }
-        
     }
-    
-    String getMappedOrderType(int type) {
-        HashMap<Integer, String> map = new HashMap();
-        map.put(0, "Sell");
-        map.put(1, "Buy");
-        map.put(2, "Buy Limit");
-        map.put(3, "Sell Limit");
-        map.put(4, "Buy Stop");
-        map.put(5, "Sell Stop");
-        map.put(6, "Buy Stop Limit");
-        map.put(7, "Sell Stop Limit");
-        
-        return map.get(type);
-    }
-    
+
     public final void setTableData() {
         int arrLength = this.closedPositions.length();
         for (int i = 0; i < arrLength; i++) {
             try {
                 JSONObject json = this.closedPositions.getJSONObject(i);
-                String time = getJSONString(json, "createdAt");
-                String ticket = getJSONString(json, "ticket");
-                String symbol = getJSONString(json, "symbol");
-                int typeNum = (int) getJSONDouble(json, "type");
-                String type = getMappedOrderType((typeNum));
-                double volume = getJSONDouble(json, "volume");
-                double price = getJSONDouble(json, "price");
-                double sl = getJSONDouble(json, "stopLoss");
-                double tp = getJSONDouble(json, "takeProfit");
-                double comission = getJSONDouble(json, "comission");
-                double fee = getJSONDouble(json, "fee");
-                double swap = getJSONDouble(json, "swap");
-                double profit = getJSONDouble(json, "profit");
+                String time = Helper.getJSONString(json, "createdAt");
+                String ticket = Helper.getJSONString(json, "ticket");
+                String symbol = Helper.getJSONString(json, "symbol");
+                int typeNum = (int) Helper.getJSONDouble(json, "type");
+                String type = Helper.getMappedOrderType((typeNum));
+                double volume = Helper.getJSONDouble(json, "volume");
+                double price = Helper.getJSONDouble(json, "price");
+                double sl = Helper.getJSONDouble(json, "stopLoss");
+                double tp = Helper.getJSONDouble(json, "takeProfit");
+                double comission = Helper.getJSONDouble(json, "comission");
+                double fee = Helper.getJSONDouble(json, "fee");
+                double swap = Helper.getJSONDouble(json, "swap");
+                double profit = Helper.getJSONDouble(json, "profit");
                 String formattedProfit = String.format("%.2f", profit);
-                double closePrice = getJSONDouble(json, "closePrice");
-                String closingTime = getJSONString(json, "updatedAt");
-                String comment = getJSONString(json, "comment");
+                double closePrice = Helper.getJSONDouble(json, "closePrice");
+                String closingTime = Helper.getJSONString(json, "updatedAt");
+                String comment = Helper.getJSONString(json, "comment");
                 String changePercent = String.format("%.2f", closePrice / price * 100 - 100);
-                
+
                 String[] rowData = {time, symbol, ticket, type, volume + "", price + "", sl + "", tp + "", closingTime, closePrice + "", comission + "", fee + "", swap + "", changePercent + "", formattedProfit, comment};
                 model.addRow(rowData);
             } catch (JSONException ex) {
@@ -145,14 +111,14 @@ public class Position extends javax.swing.JPanel {
             }
         }
     }
-    
+
     public final void clearTableRows() {
         int size = model.getRowCount();
         for (int i = 0; i < size; i++) {
             model.removeRow(i);
         }
     }
-    
+
     public final void setBottomStrip() {
         /// calculate profit
         double profit = 0;
@@ -164,9 +130,9 @@ public class Position extends javax.swing.JPanel {
                 profit += cp;
             } catch (Exception ex) {
                 System.out.println("Casting failed, probably empty string");
-                
+
             }
-            
+
         }
         System.out.println("profit: " + profit);
         try {
@@ -181,10 +147,10 @@ public class Position extends javax.swing.JPanel {
         // credit
 
     }
-    
+
     public Position() {
         initComponents();
-        
+
         fetchNSetPositions();
         setupTable();
         setTableData();

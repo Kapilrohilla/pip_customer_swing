@@ -6,6 +6,7 @@ package com.mycompany.metacustomer.History;
 
 import com.mycompany.metacustomer.Utility.APIs;
 import com.mycompany.metacustomer.Metacustomer;
+import com.mycompany.metacustomer.Utility.Helper;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -72,7 +73,8 @@ public class Deals extends javax.swing.JPanel {
         String apiData = getData();
         System.out.println("apidata" + apiData);
         JSONArray jsnArray = new JSONArray(apiData);
-        String[] columns = {"Ticket", "Symbol", "Order", "Time", "Type", "Direction", "Commission", "Volume", "Status", "StopLoss", "TakeProfit", "Profit"};
+//        String[] columns = {"Ticket", "Symbol", "Order", "Time", "Type", "Direction", "Commission", "Volume", "Status", "StopLoss", "TakeProfit", "Profit"};
+        String[] columns = {"Time", "Symbol", "Deal", "Order", "Type", "Direction", "Volume", "Price", "S/L", "T/P", "Commission", "Fee", "Swap", "Profit", "Change", "Comment"};
         for (String column : columns) {
             model.addColumn(column);
         }
@@ -82,104 +84,33 @@ public class Deals extends javax.swing.JPanel {
         for (int i = 0; i < jsnArray.length(); i++) {
             JSONObject jso = jsnArray.getJSONObject(i);
             System.out.println("deal's jso: " + jso);
-            String symbol = jso.getString("symbol");
-            String ticket = jso.getString("ticket");
-            String volume = jso.getDouble("volume") + "";
-            int status = jso.getInt("status");
-            String statusText = status == 1 ? "Fulfilled" : "Canceled";
-            double profit = jso.getDouble("profit");
-            String order = jso.getString("order");
-            String time = jso.getString("createdAt");
-            int typeNum = jso.getInt("type");
-            String type;
-            switch (typeNum) {
-                case 0: {
-                    type = "Sell";
-                    break;
-                }
-                case 1: {
-                    type = "Buy";
-                    break;
-                }
-                case 2: {
-                    type = "Buy Limit";
-                    break;
-                }
-                case 3: {
-                    type = "Sell Limit";
-                    break;
-                }
-                case 4: {
-                    type = "Buy Stop";
-                    break;
-                }
-                case 5: {
-                    type = "Buy Stop Limit";
-                    break;
-                }
-                case 6: {
-                    type = "Sell Stop Limit";
-                    break;
-                }
-                default: {
-                    type = "Invalid Type";
-                }
-            }
-            double swap;
-            try {
-                swap = jso.getDouble("swap");
-            } catch (JSONException ex) {
-                System.out.println(ex.getMessage());
-                swap = 0;
-            }
+            // new one
+            String time = Helper.getJSONString(jso, "createdAt");
+            String symbol = Helper.getJSONString(jso, "symbol");
+            String deal = Helper.getJSONString(jso, "_id");
+            String order = Helper.getJSONString(jso, "order");
+            int typeNum = Helper.getJSONInt(jso, "type");
+            String type = Helper.getMappedOrderType(typeNum);
+            int directionNum = Helper.getJSONInt(jso, "entry");
+
+            String direction = directionNum == 0 ? "Out" : "In";
+            double volume = Helper.getJSONDouble(jso, "volume");
+            double price = Helper.getJSONDouble(jso, "price");
+            double stopLoss = Helper.getJSONDouble(jso, "stopLoss");
+            double takeProfit = Helper.getJSONDouble(jso, "takeProfit");
+            double comission = Helper.getJSONDouble(jso, "comission");
+            totalCommission += comission;
+            double fee = Helper.getJSONDouble(jso, "fee");
+            double swap = Helper.getJSONDouble(jso, "swap");
+            double profit = Helper.getJSONDouble(jso, "profit");
             totalProfit += profit;
-            totalSwap += swap;
-            double comm;
-            try {
-                comm = jso.getDouble("comission");
-            } catch (JSONException ex) {
-                System.out.println(ex.getMessage());
-                comm = 0;
+            String change = "";
+            String initialComment = Helper.getJSONString(jso, "comment");
+            String comment = initialComment;
+            if ("null".equals(initialComment)) {
+                comment = initialComment;
             }
-            totalCommission += comm;
-            String stopLoss;
-            try {
-                stopLoss = jso.getString("stopLoss");
-
-                if (stopLoss == "null") {
-                    stopLoss = "";
-                }
-            } catch (JSONException ex) {
-                stopLoss = "";
-            }
-            String takeProfit = jso.getString("takeProfit");
-            if (takeProfit == "null") {
-                takeProfit = "";
-            }
-            double commission;
-            try {
-                commission = jso.getDouble("comission");
-            } catch (JSONException ex) {
-                ex.getStackTrace();
-                commission = 0.0;
-            }
-
-            double price = 0.0;
-            try {
-                price = jso.getDouble("price");
-            } catch (Exception ex) {
-                ex.getStackTrace();
-            }
-            double fee;
-            try {
-                fee = jso.getDouble("fee");
-            } catch (Exception ex) {
-                fee = 0.0;
-            }
-//            fee = jso.getDouble("fee");
-
-            String[] rowData = {ticket, symbol, order, time, type, "", commission + "", volume, statusText, stopLoss, takeProfit, String.format("%.2f", profit)};
-
+            String[] rowData = {time, symbol, deal, order, type, direction, volume + "", price + "", stopLoss + "", takeProfit + "", comission + "", fee + "", swap + "", profit + "", change, comment};
             model.addRow(rowData);
         }
 

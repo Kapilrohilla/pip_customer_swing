@@ -6,6 +6,8 @@ package com.mycompany.metacustomer.History;
 
 import com.mycompany.metacustomer.Utility.APIs;
 import com.mycompany.metacustomer.Metacustomer;
+import com.mycompany.metacustomer.Utility.ApiServices;
+import com.mycompany.metacustomer.Utility.Helper;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -13,10 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,8 +33,58 @@ public class Order extends javax.swing.JPanel {
     public JSONArray orderDataJSNArr;
     public JLabel topLabel;
 
+    void fetchOrderData() {
+        ApiServices services = new ApiServices();
+        String url = APIs.GET_USER_ORDERS;
+        String token = Metacustomer.loginToken;
+        try {
+            Response res = services.getDataWithToken(url, token);
+            if (res.isSuccessful()) {
+                ResponseBody body = res.body();
+                String apiData = body.string();
+                orderDataJSNArr = new JSONArray(apiData);
+            }
+        } catch (IOException | JSONException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
+
+    }
+
+    void setColumns() {
+        String[] columns = {"Time", "Symbol", "Ticket", "Type", "Volume", "Price", "S/L", "T/P", "Time", "State", "Comment"};
+        for (String column : columns) {
+            model.addColumn(column);
+        }
+    }
+
+    public void setRowToTable() {
+        int orderLength = orderDataJSNArr.length();
+        for (int i = 0; i < orderLength; i++) {
+            try {
+                JSONObject order = orderDataJSNArr.getJSONObject(i);
+                String time = Helper.getJSONString(order, "createdAt");
+                String symbol = Helper.getJSONString(order, "symbol");
+                String ticket = Helper.getJSONString(order, "ticket");
+                int typeNum = Helper.getJSONInt(order, "type");
+                String type = Helper.getMappedOrderType(typeNum);
+                double volume = Helper.getJSONDouble(order, "volume");
+                double price = Helper.getJSONDouble(order, "price");
+                double sl = Helper.getJSONDouble(order, "stopLoss");
+                double tp = Helper.getJSONDouble(order, "takeProfit");
+                String ctime = Helper.getJSONString(order, "updatedAt");
+                String state = "";
+                String comment = Helper.getJSONString(order, "comment");
+                String[] rowData = {time, symbol, ticket, type, volume + "", price + "", sl + "", tp + "", ctime, state, comment};
+                model.addRow(rowData);
+            } catch (JSONException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
     public Order() {
         initComponents();
+
         try {
             tableData();
         } catch (JSONException ex) {
@@ -43,80 +93,47 @@ public class Order extends javax.swing.JPanel {
 
     }
 
-    String getData() {
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .build();
-        String url = APIs.GET_USER_ORDERS;
-
-        String token = Metacustomer.loginToken;
-        if (token == null) {
-            return "";
-        }
-        Request request = new Request.Builder()
-                .url(url)
-                .header("Authorization", token)
-                .build();
-
-        Call call = client.newCall(request);
-
-        try {
-            Response res = call.execute();
-            return res.body().string();
-        } catch (IOException e) {
-            System.out.println("err: \n" + e);
-            return "";
-        }
-    }
-
     final void tableData() throws JSONException {
-        String apiData = getData();
-
-        orderDataJSNArr = new JSONArray(apiData);
-        String[] columns = {"Ticket", "Symbol", "Time", "CurrentPrice", "Status", "StopLoss", "TakeProfit", "Volume"};
-        for (String column : columns) {
-            model.addColumn(column);
-        }
-
+        fetchOrderData();
+        setColumns();
+        setRowToTable();
         setLayout(new BorderLayout());
         JTable jt = new JTable(model);
         jt.setAutoCreateRowSorter(true);
         topLabel = new JLabel();
-        orderDataJSNArr = new JSONArray(apiData);
         totalOrder = orderDataJSNArr.length();
         totalCancelled = 0;
-        try {
-            for (int i = 0; i < orderDataJSNArr.length(); i++) {
-                JSONObject jso = orderDataJSNArr.getJSONObject(i);
-                String ticket = jso.getString("ticket");
-                String symbol = jso.getString("symbol");
-                String currentPrice = jso.getString("currentPrice");
-                int status = jso.getInt("status");
-                String stopLoss = jso.getString("stopLoss");
-                String takeProfit = jso.getString("takeProfit");
-                String time = jso.getString("createdAt");
-                double initialVolume = jso.getDouble("initialVolume");
-                double currentVolume = jso.getDouble("currentVolume");
-                double volume = currentVolume - initialVolume;
-                if (status == 0) {
-                    totalCancelled++;
-                }
-                if (stopLoss == "null") {
-                    stopLoss = "";
-                }
-                if (takeProfit == "null") {
-                    takeProfit = "";
-                }
 
-                String[] rowData = {ticket, symbol, time, currentPrice, status == 1 ? "Filled" : "Cancelled", stopLoss, takeProfit, volume + ""};
-                model.addRow(rowData);
-
-            }
-        } catch (JSONException ex) {
-            ex.getStackTrace();
-        }
+//        try {
+//            for (int i = 0; i < orderDataJSNArr.length(); i++) {
+//                JSONObject jso = orderDataJSNArr.getJSONObject(i);
+//                String ticket = jso.getString("ticket");
+//                String symbol = jso.getString("symbol");
+//                String currentPrice = jso.getString("currentPrice");
+//                int status = jso.getInt("status");
+//                String stopLoss = jso.getString("stopLoss");
+//                String takeProfit = jso.getString("takeProfit");
+//                String time = jso.getString("createdAt");
+//                double initialVolume = jso.getDouble("initialVolume");
+//                double currentVolume = jso.getDouble("currentVolume");
+//                double volume = currentVolume - initialVolume;
+//                if (status == 0) {
+//                    totalCancelled++;
+//                }
+//                if (stopLoss == "null") {
+//                    stopLoss = "";
+//                }
+//                if (takeProfit == "null") {
+//                    takeProfit = "";
+//                }
+//                
+//                String[] rowData = {ticket, symbol, time, currentPrice, status == 1 ? "Filled" : "Cancelled", stopLoss, takeProfit, volume + ""};
+//                model.addRow(rowData);
+//                
+//            }
+//        } catch (JSONException ex) {
+//            ex.getStackTrace();
+//        }
 //        model.fireTableDataChanged();
         topLabel.setText(String.format("Filled: %f, Cancelled: %f, TotalOrder: %f", (totalOrder - totalCancelled), totalCancelled, totalOrder));
 
