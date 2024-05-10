@@ -12,6 +12,7 @@ import com.mycompany.metacustomer.History.Position;
 import com.mycompany.metacustomer.History.Trade;
 import java.awt.BorderLayout;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
@@ -117,7 +118,10 @@ public class BottomPanel extends javax.swing.JPanel {
                             String apiData = getData(APIs.GET_CLOSED_POSITION);
                             JSONArray apiJSA = new JSONArray(apiData);
                             Position.closedPositions = apiJSA;
-                            Position.setTableData();
+                            tab9.clearTableRows();
+                            tab9.setTableData();
+                            Position.model.fireTableDataChanged();
+//                            Position.setTableData();
                         } catch (JSONException ex) {
                             ex.getStackTrace();
                         }

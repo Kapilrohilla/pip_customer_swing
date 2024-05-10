@@ -231,7 +231,7 @@ public class LeftPanel extends javax.swing.JPanel {
 
     public void tabledata() throws JSONException {
 
-        String[] columns = {"Symbol", "Bid", "Ask", "Volume"};
+        String[] columns = {"Symbol", "Bid", "Ask", "Change Percent"};
         String apiData = getData();
         System.out.println("getData: " + apiData);
         JSONObject jso = new JSONObject(apiData);
@@ -241,7 +241,9 @@ public class LeftPanel extends javax.swing.JPanel {
         }
 
         JSONArray jsa = jso.getJSONArray("message");
-
+        System.out.println("::::::::::::::::::::::::::::::::;");
+        System.out.println("jsa: " + jsa);
+        System.out.println("::::::::::::::::::::::::::::::::;");
         for (int i = 0; i < jsa.length(); i++) {
 
             JSONObject obj = jsa.getJSONObject(i);
@@ -250,7 +252,7 @@ public class LeftPanel extends javax.swing.JPanel {
                 symbol = obj.getString("symbol");
                 bid = obj.getDouble("bid") + "";
                 ask = obj.getDouble("ask") + "";
-                volume = obj.getDouble("volume") + "";
+                volume = obj.getDouble("changePercent") + "";
             } catch (JSONException ex) {
 
             }
