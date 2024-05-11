@@ -235,7 +235,7 @@ public class Trade extends javax.swing.JPanel {
             @Override
             public void call(Object... args) {
                 JSONObject jso = (JSONObject) args[0];
-//                System.out.println("posData: " + jso);
+                System.out.println("posData: " + jso);
                 try {
                     double freeMargin = jso.getDouble("freeMargin");
                     double margin = jso.getDouble("margin");
@@ -253,8 +253,8 @@ public class Trade extends javax.swing.JPanel {
                     jLabel4.setText(equity2display);
                     String credit2display = String.format("%.2f", credit);
                     jLabel6.setText(credit2display);
-//                    String margin2display = String.format("%.2f", margin);
-//                    jLabel8.setText(margin2display);
+                    String margin2display = String.format("%.2f", margin);
+                    jLabel8.setText(margin2display);
                     String freeMarginDisplay = String.format("%.2f", freeMargin);
                     jLabel10.setText(freeMarginDisplay);
                     String level2display = String.format("%.2f", level);
@@ -264,13 +264,6 @@ public class Trade extends javax.swing.JPanel {
                 } catch (JSONException ex) {
                     System.out.println("ex: " + ex.getMessage());
                 }
-//                try{
-////                    double posData = jso.getDouble("profit");
-////                    double currentPrice = jso.getDouble("currentPrice");
-////                    System.out.println("profit: " + profit );
-//                }catch(JSONException ex){
-//                    ex.getStackTrace();
-//                }
             }
         });
     }
@@ -280,7 +273,7 @@ public class Trade extends javax.swing.JPanel {
             @Override
             public void call(Object... os) {
                 JSONObject posProfit = (JSONObject) os[0];
-                System.out.println("posProfit: " + posProfit);
+//                System.out.println("posProfit: " + posProfit);
                 try {
 //                    System.out.println("posProfit: " + posProfit);
                     double profit = posProfit.getDouble("profit");

@@ -28,8 +28,8 @@ import org.json.JSONObject;
 public class Order extends javax.swing.JPanel {
 
     public DefaultTableModel model = new DefaultTableModel();
-    public double totalCancelled = 0;
-    public double totalOrder = 0;
+    public int totalCancelled = 0;
+    public int totalOrder = 0;
     public JSONArray orderDataJSNArr;
     public JLabel topLabel;
 
@@ -82,62 +82,26 @@ public class Order extends javax.swing.JPanel {
         }
     }
 
-    public Order() {
-        initComponents();
-
-        try {
-            tableData();
-        } catch (JSONException ex) {
-
-        }
-
+    private void setStripData() {
+        topLabel = new JLabel();
+        totalOrder = orderDataJSNArr.length();
+        totalCancelled = 0;
+        topLabel.setText(String.format("Filled: %d, Cancelled: %d, TotalOrder: %d", (totalOrder - totalCancelled), totalCancelled, totalOrder));
     }
 
-    final void tableData() throws JSONException {
+    public Order() {
+        initComponents();
+        tableData();
+    }
+
+    final void tableData() {
         fetchOrderData();
         setColumns();
         setRowToTable();
         setLayout(new BorderLayout());
         JTable jt = new JTable(model);
         jt.setAutoCreateRowSorter(true);
-        topLabel = new JLabel();
-        totalOrder = orderDataJSNArr.length();
-        totalCancelled = 0;
-
-//        try {
-//            for (int i = 0; i < orderDataJSNArr.length(); i++) {
-//                JSONObject jso = orderDataJSNArr.getJSONObject(i);
-//                String ticket = jso.getString("ticket");
-//                String symbol = jso.getString("symbol");
-//                String currentPrice = jso.getString("currentPrice");
-//                int status = jso.getInt("status");
-//                String stopLoss = jso.getString("stopLoss");
-//                String takeProfit = jso.getString("takeProfit");
-//                String time = jso.getString("createdAt");
-//                double initialVolume = jso.getDouble("initialVolume");
-//                double currentVolume = jso.getDouble("currentVolume");
-//                double volume = currentVolume - initialVolume;
-//                if (status == 0) {
-//                    totalCancelled++;
-//                }
-//                if (stopLoss == "null") {
-//                    stopLoss = "";
-//                }
-//                if (takeProfit == "null") {
-//                    takeProfit = "";
-//                }
-//                
-//                String[] rowData = {ticket, symbol, time, currentPrice, status == 1 ? "Filled" : "Cancelled", stopLoss, takeProfit, volume + ""};
-//                model.addRow(rowData);
-//                
-//            }
-//        } catch (JSONException ex) {
-//            ex.getStackTrace();
-//        }
-//        model.fireTableDataChanged();
-        topLabel.setText(String.format("Filled: %f, Cancelled: %f, TotalOrder: %f", (totalOrder - totalCancelled), totalCancelled, totalOrder));
-
-//        setTableData();
+        setStripData();
         add(topLabel, BorderLayout.NORTH);
         JScrollPane scrollPane = new JScrollPane(jt);
 

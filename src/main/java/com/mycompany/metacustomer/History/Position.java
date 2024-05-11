@@ -120,27 +120,31 @@ public class Position extends javax.swing.JPanel {
     }
 
     public final void setBottomStrip() {
-        /// calculate profit
         double profit = 0;
+        String balance = Metacustomer.bal;
+        double bal = Double.parseDouble(balance);
+        balance = String.format("%.2f", bal);
+        double credit = Metacustomer.credit;
+        String formattedCredit = String.format("%.2f", credit);
+        jLabel10.setText(balance);
+        jLabel4.setText(formattedCredit);
         int rowCount = model.getRowCount();
         for (int i = 0; i < rowCount; i++) {
             try {
                 String p = (String) model.getValueAt(i, 14);
                 double cp = Double.parseDouble(p);
                 profit += cp;
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 System.out.println("Casting failed, probably empty string");
-
             }
-
         }
         System.out.println("profit: " + profit);
         try {
             jLabel3.setText(profit + "");
-            jLabel4.setText("credit");
+//            jLabel4.setText("credit");
             jLabel6.setText("deposit");
             jLabel8.setText("withdrawl");
-            jLabel10.setText("bal");
+//            jLabel10.setText("bal");
         } catch (NullPointerException ex) {
             ex.getStackTrace();
         }

@@ -239,11 +239,8 @@ public class LeftPanel extends javax.swing.JPanel {
         for (String column : columns) {
             tableModel.addColumn(column);
         }
-
+        
         JSONArray jsa = jso.getJSONArray("message");
-        System.out.println("::::::::::::::::::::::::::::::::;");
-        System.out.println("jsa: " + jsa);
-        System.out.println("::::::::::::::::::::::::::::::::;");
         for (int i = 0; i < jsa.length(); i++) {
 
             JSONObject obj = jsa.getJSONObject(i);

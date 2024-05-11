@@ -6,6 +6,8 @@ package com.mycompany.metacustomer;
 import com.mycompany.metacustomer.Utility.APIs;
 import com.mycompany.metacustomer.Auth.AuthContainer;
 import com.mycompany.metacustomer.History.Trade;
+import com.mycompany.metacustomer.Utility.ApiServices;
+import com.mycompany.metacustomer.Utility.Helper;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -59,6 +61,7 @@ public class Metacustomer extends JFrame {
     static public String type = "candle";
     public static String bal;
     public static String groupCategory;
+    public static double credit;
 
     private void updateChartBaseTime(String timeInMinute) {
         String newUrl = HomeChartUrl + "&symbol=" + symbol + "&time=" + timeInMinute;
@@ -256,47 +259,54 @@ public class Metacustomer extends JFrame {
             }
         });
 
-        String userdata = getData();
-        System.out.println("/user::::: " + userdata);
+        ApiServices services = new ApiServices();
         try {
-            JSONObject js = new JSONObject(userdata);
-            JSONObject user = js.getJSONObject("user");
-            bal = user.getString("balance");
-            userId = user.getString("_id");
+            Response res = services.getDataWithToken(APIs.USER, Metacustomer.loginToken);
+            String userdata = res.body().string();
             try {
-                groupCategory = user.getString("HCategory");
-            } catch (JSONException ex) {
+                JSONObject js = new JSONObject(userdata);
+                JSONObject user = js.getJSONObject("user");
+                bal = user.getString("balance");
+                userId = user.getString("_id");
+                credit = Helper.getJSONDouble(user, "credit");
+                try {
+                    groupCategory = user.getString("HCategory");
+                } catch (JSONException ex) {
+                }
+
+                JSONObject jso = new JSONObject();
+                jso.put("userId", Metacustomer.userId);
+                Metacustomer.socket.emit("userpositions", jso);
+                System.out.println("User is live now..");
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
-            JSONObject jso = new JSONObject();
-            jso.put("userId", Metacustomer.userId);
-//            System.out.println("userpositions payload: " + jso);
-            Metacustomer.socket.emit("userpositions", jso);
-            System.out.println("User is live now..");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
         }
-    }
 
-    final String getData() {
-        OkHttpClient client = new OkHttpClient();
-        String url = APIs.USER;
-        System.out.println(url);
-        String token = Metacustomer.loginToken;
-        Request request = new Request.Builder()
-                .url(url)
-                .header("Authorization", token)
-                .build();
-        Call call = client.newCall(request);
-
-        try {
-            Response res = call.execute();
-            return res.body().string();
-        } catch (IOException e) {
-            System.out.println("Error occurred while fetching trading account specific overview");
-            return "";
-        }
+//        String userdata = getData();
     }
+//
+//    final String getData() {
+//        OkHttpClient client = new OkHttpClient();
+//        String url = APIs.USER;
+//        System.out.println(url);
+//        String token = Metacustomer.loginToken;
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .header("Authorization", token)
+//                .build();
+//        Call call = client.newCall(request);
+//
+//        try {
+//            Response res = call.execute();
+//            return res.body().string();
+//        } catch (IOException e) {
+//            System.out.println("Error occurred while fetching trading account specific overview");
+//            return "";
+//        }
+//    }
 
     private void menubarsetup() {
         jMenuBar1 = new javax.swing.JMenuBar();
