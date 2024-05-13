@@ -10,6 +10,7 @@ package com.mycompany.metacustomer;
 import com.mycompany.metacustomer.Utility.APIs;
 import com.mycompany.metacustomer.AddSymbol2BidAsk;
 import static com.mycompany.metacustomer.Metacustomer.HomeChartUrl;
+import com.mycompany.metacustomer.Utility.Helper;
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -239,7 +240,7 @@ public class LeftPanel extends javax.swing.JPanel {
         for (String column : columns) {
             tableModel.addColumn(column);
         }
-        
+
         JSONArray jsa = jso.getJSONArray("message");
         for (int i = 0; i < jsa.length(); i++) {
 
@@ -341,18 +342,22 @@ public class LeftPanel extends javax.swing.JPanel {
                     int clickCount = e.getClickCount();
                     if (clickCount > 1) {
                         try {
-
                             Metacustomer.symbol = watchlistData.get(row).getString("symbol");
 
-//                            String[] urlArray = Metacustomer.HomeChartUrl.split("symbol=");
-//                            String[] resplit = urlArray[1].split("&");
-//                            resplit[0] = selectedSymbol;
-//
-//                            urlArray[1] = String.join("&", resplit);
-                            String newUrl = Metacustomer.HomeChartUrl + "&symbol=" + Metacustomer.symbol;
+                            String symbolName = Metacustomer.symbol;
+                            Helper.updateBrowserChartThroughJava("symbol", symbolName);
 
-                            System.out.println("newUrl: " + newUrl);
-                            Metacustomer.rightPanel.browser_.loadURL(newUrl);
+//                            Metacustomer.symbol = watchlistData.get(row).getString("symbol");
+//
+////                            String[] urlArray = Metacustomer.HomeChartUrl.split("symbol=");
+////                            String[] resplit = urlArray[1].split("&");
+////                            resplit[0] = selectedSymbol;
+////
+////                            urlArray[1] = String.join("&", resplit);
+//                            String newUrl = Metacustomer.HomeChartUrl + "&symbol=" + Metacustomer.symbol;
+//
+//                            System.out.println("newUrl: " + newUrl);
+//                            Metacustomer.rightPanel.browser_.loadURL(newUrl);
                         } catch (JSONException ex) {
                             System.out.println("exception occurred");
                         }

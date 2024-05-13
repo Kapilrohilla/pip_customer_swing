@@ -16,6 +16,7 @@ import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
@@ -36,7 +38,7 @@ import org.json.JSONObject;
 
 /**
  *
- * @author techninza
+ * @author Kapil Rohilla
  */
 public class Metacustomer extends JFrame {
 
@@ -54,7 +56,8 @@ public class Metacustomer extends JFrame {
     public static String userId;
     static public String loginToken;
     JSplitPane jSplitPane1;
-
+    public static String accountId;
+    public static String name;
     static public String HomeChartUrl = APIs.CHART + "?token=";
     static public String symbol = "XAUUSD";
     static public String time = "1";
@@ -62,6 +65,7 @@ public class Metacustomer extends JFrame {
     public static String bal;
     public static String groupCategory;
     public static double credit;
+//    public static MetaThis = Metacustomer.this;
 
     private void updateChartBaseTime(String timeInMinute) {
         String newUrl = HomeChartUrl + "&symbol=" + symbol + "&time=" + timeInMinute;
@@ -268,9 +272,12 @@ public class Metacustomer extends JFrame {
                 JSONObject user = js.getJSONObject("user");
                 bal = user.getString("balance");
                 userId = user.getString("_id");
+                name = user.getString("name");
+                accountId = user.getString("email");
                 credit = Helper.getJSONDouble(user, "credit");
+                JSONObject group = js.getJSONObject("group");
                 try {
-                    groupCategory = user.getString("HCategory");
+                    groupCategory = group.getString("HCategory");
                 } catch (JSONException ex) {
                 }
 
@@ -322,9 +329,8 @@ public class Metacustomer extends JFrame {
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
 
-        jMenu3.setText("View");
-        jMenuBar1.add(jMenu3);
-
+//        jMenu3.setText("View");
+//        jMenuBar1.add(jMenu3);
         jMenu6.setText("Insert");
         // jMenuBar1.add(jMenu6);
 
@@ -337,9 +343,8 @@ public class Metacustomer extends JFrame {
         jMenu4.setText("Window");
         //jMenuBar1.add(jMenu4);
 
-        jMenu5.setText("Help");
-        jMenuBar1.add(jMenu5);
-
+//        jMenu5.setText("Help");
+//        jMenuBar1.add(jMenu5);
         setJMenuBar(jMenuBar1);
 
     }
@@ -368,26 +373,26 @@ public class Metacustomer extends JFrame {
     private void menusetup() {
         JMenu a1 = new JMenu("New Chart");
 
-        JMenuItem a2 = new JMenuItem("Profiles");
+//        JMenuItem a2 = new JMenuItem("Profiles");
         JMenuItem a11 = new JMenuItem("My Profile");
-        JMenuItem a3 = new JMenuItem("Close");
-        JMenuItem a4 = new JMenuItem("Save");
-        JMenuItem a5 = new JMenuItem("Save as Picture");
+//        JMenuItem a3 = new JMenuItem("Close");
+//        JMenuItem a4 = new JMenuItem("Save");
+//        JMenuItem a5 = new JMenuItem("Save as Picture");
         JMenuItem a15 = new JMenuItem("Add symbol");
-        JMenuItem a6 = new JMenuItem("Open Data Folder");
-        JMenuItem a7 = new JMenuItem("Print");
-        JMenuItem a8 = new JMenuItem("Print Preview");
-        JMenuItem a9 = new JMenuItem("Print Setup");
-        JMenuItem a10 = new JMenuItem("Open an Account");
+//        JMenuItem a6 = new JMenuItem("Open Data Folder");
+//        JMenuItem a7 = new JMenuItem("Print");
+//        JMenuItem a8 = new JMenuItem("Print Preview");
+//        JMenuItem a9 = new JMenuItem("Print Setup");
+//        JMenuItem a10 = new JMenuItem("Open an Account");
         JMenuItem a13 = new JMenuItem("Logout");
 
         JMenuItem a1a = new JMenuItem("EURUSD");
-        JMenuItem a1b = new JMenuItem("GBPUSD");
-        JMenuItem a1c = new JMenuItem("USDCHF");
-        JMenuItem a1d = new JMenuItem("USDJPY");
-        JMenuItem a1e = new JMenuItem("USDCNH");
+        JMenuItem a1b = new JMenuItem("AUDCAD");
+        JMenuItem a1c = new JMenuItem("AUDCHF");
+        JMenuItem a1d = new JMenuItem("AUDJPY");
+        JMenuItem a1e = new JMenuItem("CADCHF");
         JMenuItem a1f = new JMenuItem("USDRUB");
-        JMenuItem a1g = new JMenuItem("Forex");
+        JMenuItem a1g = new JMenuItem("BTCUSD");
         JMenuItem a1h = new JMenuItem("XAUUSD");
 
         a13.addActionListener((ActionEvent e) -> {
@@ -422,89 +427,152 @@ public class Metacustomer extends JFrame {
 
         }));
         a1a.addActionListener((ActionEvent e) -> {
-            String initialUrl = Metacustomer.HomeChartUrl;
-            String[] initialUrlSymBreak = initialUrl.split("symbol=");
-            String[] resplit = initialUrlSymBreak[1].split("&");
-            resplit[0] = "EURUSD";
-            initialUrlSymBreak[1] = String.join("&", resplit);
-            initialUrl = String.join("symbol=", initialUrlSymBreak);
-            HomeChartUrl = initialUrl;
-            System.out.println("url: " + HomeChartUrl);
-            rightPanel.browser_.loadURL(HomeChartUrl);
+//            System.out.println(a1a.getText());
+            String symbolName = a1a.getText();
+            Metacustomer.symbol = symbolName;
+            Helper.updateBrowserChartThroughJava("symbol", symbolName);
+
         });
 
         a1b.addActionListener((ActionEvent e) -> {
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            try {
+//                String newUrl = Helper.updateQueryParamterInUrl(initialUrl, "symbol", "AUDCAD");
+//                Metacustomer.HomeChartUrl = newUrl;
+//
+//            } catch (MalformedURLException ex) {
+//                System.out.println(ex.getMessage());
+//                System.out.println(ex.getStackTrace());
+//
+//            }
+//            rightPanel.browser_.loadURL(HomeChartUrl);
+            String symbolName = a1b.getText();
+            Metacustomer.symbol = symbolName;
+            Helper.updateBrowserChartThroughJava("symbol", symbolName);
 
-            String initialUrl = Metacustomer.HomeChartUrl;
-            String[] initialUrlSymBreak = initialUrl.split("symbol=");
-            String[] resplit = initialUrlSymBreak[1].split("&");
-            resplit[0] = "GBPUSD";
-            initialUrlSymBreak[1] = String.join("&", resplit);
-            initialUrl = String.join("symbol=", initialUrlSymBreak);
-            HomeChartUrl = initialUrl;
-            System.out.println("url: " + HomeChartUrl);
-            rightPanel.browser_.loadURL(HomeChartUrl);
         });
         a1c.addActionListener((ActionEvent e) -> {
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            try {
+//                String newUrl = Helper.updateQueryParamterInUrl(initialUrl, "symbol", "AUDCHF");
+//                Metacustomer.HomeChartUrl = newUrl;
+//
+//            } catch (MalformedURLException ex) {
+//                System.out.println(ex.getMessage());
+//                System.out.println(ex.getStackTrace());
+//
+//            }
+//            rightPanel.browser_.loadURL(HomeChartUrl);
+//            JOptionPane.showMessageDialog(Metacustomer.this, "Failed to open GBPUSD");
+            String symbolName = a1c.getText();
+            Metacustomer.symbol = symbolName;
+            Helper.updateBrowserChartThroughJava("symbol", symbolName);
 
-            String initialUrl = Metacustomer.HomeChartUrl;
-            String[] initialUrlSymBreak = initialUrl.split("symbol=");
-            String[] resplit = initialUrlSymBreak[1].split("&");
-            resplit[0] = "USDCHF";
-            initialUrlSymBreak[1] = String.join("&", resplit);
-            initialUrl = String.join("symbol=", initialUrlSymBreak);
-            HomeChartUrl = initialUrl;
-            System.out.println("url: " + HomeChartUrl);
-            rightPanel.browser_.loadURL(HomeChartUrl);
         });
         a1d.addActionListener((ActionEvent e) -> {
 
-            String initialUrl = Metacustomer.HomeChartUrl;
-            String[] initialUrlSymBreak = initialUrl.split("symbol=");
-            String[] resplit = initialUrlSymBreak[1].split("&");
-            resplit[0] = "USDJPY";
-            initialUrlSymBreak[1] = String.join("&", resplit);
-            initialUrl = String.join("symbol=", initialUrlSymBreak);
-            HomeChartUrl = initialUrl;
-            System.out.println("url: " + HomeChartUrl);
-            rightPanel.browser_.loadURL(HomeChartUrl);
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            try {
+//                String newUrl = Helper.updateQueryParamterInUrl(initialUrl, "symbol", "AUDJPY");
+//                Metacustomer.HomeChartUrl = newUrl;
+//
+//            } catch (MalformedURLException ex) {
+//                System.out.println(ex.getMessage());
+//                System.out.println(ex.getStackTrace());
+//
+//            }
+//            rightPanel.browser_.loadURL(HomeChartUrl);
+            String symbolName = a1d.getText();
+            Metacustomer.symbol = symbolName;
+            Helper.updateBrowserChartThroughJava("symbol", symbolName);
+
         });
         a1e.addActionListener((ActionEvent e) -> {
+            String symbolName = a1e.getText();
+            Metacustomer.symbol = symbolName;
+            Metacustomer.symbol = symbolName;
+            Helper.updateBrowserChartThroughJava("symbol", symbolName);
 
-            String initialUrl = Metacustomer.HomeChartUrl;
-            String[] initialUrlSymBreak = initialUrl.split("symbol=");
-            String[] resplit = initialUrlSymBreak[1].split("&");
-            resplit[0] = "USDCNH";
-            initialUrlSymBreak[1] = String.join("&", resplit);
-            initialUrl = String.join("symbol=", initialUrlSymBreak);
-            HomeChartUrl = initialUrl;
-            System.out.println("url: " + HomeChartUrl);
-            rightPanel.browser_.loadURL(HomeChartUrl);
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            try {
+//                String newUrl = Helper.updateQueryParamterInUrl(initialUrl, "symbol", "EURRUB");
+//                Metacustomer.HomeChartUrl = newUrl;
+//
+//            } catch (MalformedURLException ex) {
+//                System.out.println(ex.getMessage());
+//                System.out.println(ex.getStackTrace());
+//
+//            }
+//            rightPanel.browser_.loadURL(HomeChartUrl);
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            String[] initialUrlSymBreak = initialUrl.split("symbol=");
+//            String[] resplit = initialUrlSymBreak[1].split("&");
+//            resplit[0] = "USDCNH";
+//            initialUrlSymBreak[1] = String.join("&", resplit);
+//            initialUrl = String.join("symbol=", initialUrlSymBreak);
+//            HomeChartUrl = initialUrl;
+//            System.out.println("url: " + HomeChartUrl);
+//            rightPanel.browser_.loadURL(HomeChartUrl);
         });
         a1f.addActionListener((ActionEvent e) -> {
+            String symbolName = a1f.getText();
+            Metacustomer.symbol = symbolName;
+            Helper.updateBrowserChartThroughJava("symbol", symbolName);
 
-            String initialUrl = Metacustomer.HomeChartUrl;
-            String[] initialUrlSymBreak = initialUrl.split("symbol=");
-            String[] resplit = initialUrlSymBreak[1].split("&");
-            resplit[0] = "USDRUB";
-            initialUrlSymBreak[1] = String.join("&", resplit);
-            initialUrl = String.join("symbol=", initialUrlSymBreak);
-            HomeChartUrl = initialUrl;
-            System.out.println("url: " + HomeChartUrl);
-            rightPanel.browser_.loadURL(HomeChartUrl);
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            String[] initialUrlSymBreak = initialUrl.split("symbol=");
+//            String[] resplit = initialUrlSymBreak[1].split("&");
+//            resplit[0] = "USDRUB";
+//            initialUrlSymBreak[1] = String.join("&", resplit);
+//            initialUrl = String.join("symbol=", initialUrlSymBreak);
+//            HomeChartUrl = initialUrl;
+//            System.out.println("url: " + HomeChartUrl);
+//            rightPanel.browser_.loadURL(HomeChartUrl);
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            try {
+//                String newUrl = Helper.updateQueryParamterInUrl(initialUrl, "symbol", "BTCUSD");
+//                Metacustomer.HomeChartUrl = newUrl;
+//
+//            } catch (MalformedURLException ex) {
+//                System.out.println(ex.getMessage());
+//                System.out.println(ex.getStackTrace());
+//
+//            }
+//            rightPanel.browser_.loadURL(HomeChartUrl);
         });
+
         a1h.addActionListener((ActionEvent e) -> {
-            System.out.println("It works");
-            String initialUrl = Metacustomer.HomeChartUrl;
-            String[] initialUrlSymBreak = initialUrl.split("symbol=");
-            String[] resplit = initialUrlSymBreak[1].split("&");
-            resplit[0] = "XAUUSD";
-            initialUrlSymBreak[1] = String.join("&", resplit);
-            initialUrl = String.join("symbol=", initialUrlSymBreak);
-            HomeChartUrl = initialUrl;
-            System.out.println("url: " + HomeChartUrl);
-            rightPanel.browser_.loadURL(HomeChartUrl);
+//            System.out.println("It works");
+            String symbolName = a1h.getText();
+            Metacustomer.symbol = symbolName;
+            Helper.updateBrowserChartThroughJava("symbol", symbolName);
+
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            String[] initialUrlSymBreak = initialUrl.split("symbol=");
+//            String[] resplit = initialUrlSymBreak[1].split("&");
+//            resplit[0] = "XAUUSD";
+//            initialUrlSymBreak[1] = String.join("&", resplit);
+//            initialUrl = String.join("symbol=", initialUrlSymBreak);
+//            HomeChartUrl = initialUrl;
+//            System.out.println("url: " + HomeChartUrl);
+//            rightPanel.browser_.loadURL(HomeChartUrl);
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            try {
+//                String newUrl = Helper.updateQueryParamterInUrl(initialUrl, "symbol", "XAUUSD");
+//                Metacustomer.HomeChartUrl = newUrl;
+//
+//            } catch (MalformedURLException ex) {
+//                System.out.println(ex.getMessage());
+//                System.out.println(ex.getStackTrace());
+//
+//            }
+//            rightPanel.browser_.loadURL(HomeChartUrl);
         });
+        a1g.addActionListener(((e) -> {
+            String symbolName = a1g.getText();
+            Metacustomer.symbol = symbolName;
+            Helper.updateBrowserChartThroughJava("symbol", symbolName);
+        }));
         a1.add(a1a);
         a1.add(a1h);
         a1.add(a1b);
@@ -516,225 +584,213 @@ public class Metacustomer extends JFrame {
         a1.add(a1g);
 
         jMenu1.add(a1);
-        jMenu1.add(a2);
+//        jMenu1.add(a2);
         jMenu1.add(a11);
-        jMenu1.add(a3);
-        jMenu1.add(a4);
+//        jMenu1.add(a3);
+//        jMenu1.add(a4);
 
-        jMenu1.add(a5);
+//        jMenu1.add(a5);
         jMenu1.add(a15);
-        jMenu1.addSeparator();
-        jMenu1.add(a6);
-        jMenu1.addSeparator();
-        jMenu1.add(a7);
-        jMenu1.add(a8);
-        jMenu1.add(a9);
-        jMenu1.addSeparator();
-        jMenu1.add(a10);
+//        jMenu1.addSeparator();
+//        jMenu1.add(a6);
+//        jMenu1.addSeparator();
+//        jMenu1.add(a7);
+//        jMenu1.add(a8);
+//        jMenu1.add(a9);
+//        jMenu1.addSeparator();
+//        jMenu1.add(a10);
 //        jMenu1.add(a11);
 //        jMenu1.add(a12);
 //        jMenu1.add(a14);
-        jMenu1.addSeparator();
+//        jMenu1.addSeparator();
         jMenu1.add(a13);
 
-        a2.addActionListener((ActionEvent e) -> {
-            System.out.println("It works");
-            new AuthContainer().setVisible(true);
-        });
-
+//        a2.addActionListener((ActionEvent e) -> {
+//            System.out.println("It works");
+//            new AuthContainer().setVisible(true);
+//        });
         JMenuItem b1 = new JMenuItem("New Order");
-        JMenuItem b2 = new JMenuItem("Strategy Tester Agents Manager");
-//        JMenuItem b3 = new JMenuItem("MetaQuotes Language Editor");
-        JMenuItem b4 = new JMenuItem("Task Manager");
-        JMenuItem b5 = new JMenuItem("Global Variables");
-//        JMenuItem b6 = new JMenuItem("MQL5 Market");
-//        JMenuItem b7 = new JMenuItem("MQL5 Signals");
-//        JMenuItem b8 = new JMenuItem("MQL5 Virtual Hosting");
-        JMenuItem b9 = new JMenuItem("Options");
+//        JMenuItem b2 = new JMenuItem("Strategy Tester Agents Manager");
+////        JMenuItem b3 = new JMenuItem("MetaQuotes Language Editor");
+//        JMenuItem b4 = new JMenuItem("Task Manager");
+//        JMenuItem b5 = new JMenuItem("Global Variables");
+////        JMenuItem b6 = new JMenuItem("MQL5 Market");
+////        JMenuItem b7 = new JMenuItem("MQL5 Signals");
+////        JMenuItem b8 = new JMenuItem("MQL5 Virtual Hosting");
+//        JMenuItem b9 = new JMenuItem("Options");
 
         b1.addActionListener((ActionEvent e) -> {
             new OrderFrame().setVisible(true);
         });
 
         jMenu2.add(b1);
-        jMenu2.addSeparator();
-        jMenu2.add(b2);
-//        jMenu2.add(b3);
-        jMenu2.add(b4);
-        jMenu2.add(b5);
-        jMenu2.addSeparator();
-//        jMenu2.add(b6);
-//        jMenu2.add(b7);
-//        jMenu2.add(b8);
-        jMenu2.add(b9);
+//        jMenu2.addSeparator();
+//        jMenu2.add(b2);
+////        jMenu2.add(b3);
+//        jMenu2.add(b4);
+//        jMenu2.add(b5);
+//        jMenu2.addSeparator();
+////        jMenu2.add(b6);
+////        jMenu2.add(b7);
+////        jMenu2.add(b8);
+//        jMenu2.add(b9);
 
-        JMenu c1 = new JMenu("Languages");
-        JMenuItem c2 = new JMenuItem("Toolbar");
-        JMenuItem c3 = new JMenuItem("Status bar");
-        JMenuItem c4 = new JMenuItem("Symbols");
-        JMenuItem c5 = new JMenuItem("Depth of Market");
-        JMenuItem c6 = new JMenuItem("Market Watch");
-        JMenuItem c7 = new JMenuItem("Data Window");
-        JMenuItem c8 = new JMenuItem("Navigator");
-        JMenuItem c9 = new JMenuItem("Toolbox");
-        JMenuItem c10 = new JMenuItem("Strategy Tester");
-        JMenuItem c11 = new JMenuItem("Reports");
-        JMenuItem c12 = new JMenuItem("Full Screen");
-
-        JMenuItem l1 = new JMenuItem("Arabi");
-        JMenuItem l2 = new JMenuItem("English");
-        JMenuItem l3 = new JMenuItem("Hindi");
-        JMenuItem l4 = new JMenuItem("Japanese");
-        JMenuItem l5 = new JMenuItem("Bengali");
-        JMenuItem l6 = new JMenuItem("Urdu");
-
-        c1.add(l1);
-        c1.add(l2);
-        c1.add(l3);
-        c1.add(l4);
-        c1.add(l5);
-        c1.add(l6);
-
-        jMenu3.add(c1);
-        jMenu3.addSeparator();
-        jMenu3.add(c2);
-        jMenu3.add(c3);
-        jMenu3.add(c4);
-        jMenu3.addSeparator();
-        jMenu3.add(c5);
-        jMenu3.add(c6);
-        jMenu3.addSeparator();
-        jMenu3.add(c7);
-        jMenu3.add(c8);
-        jMenu3.add(c9);
-        jMenu3.add(c10);
-        jMenu3.addSeparator();
-        jMenu3.add(c11);
-        jMenu3.add(c12);
-
-        JMenuItem d1 = new JMenuItem("Tile Windows");
-        JMenuItem d2 = new JMenuItem("Cascade");
-        JMenuItem d3 = new JMenuItem("Tile Horizontally");
-        JMenuItem d4 = new JMenuItem("Tile Vertically");
-        JMenuItem d5 = new JMenuItem("Arrange Icons");
-        JMenuItem d6 = new JMenuItem("Resolutions");
-
-        jMenu4.add(d1);
-        jMenu4.addSeparator();
-        jMenu4.add(d2);
-        jMenu4.add(d3);
-        jMenu4.add(d4);
-        jMenu4.add(d5);
-        jMenu4.addSeparator();
-        jMenu4.add(d6);
-
-        JMenu g1 = new JMenu("Indicators");
-        JMenu g2 = new JMenu("Objects");
-        JMenu g3 = new JMenu("Experts");
-        JMenu g4 = new JMenu("Scripts");
-
-        JMenuItem g1a = new JMenuItem("Williams Percent Range");
-        JMenuItem g1b = new JMenuItem("Volumes");
-        JMenuItem g1c = new JMenuItem("Variable Index Dynamic Average");
-        JMenuItem g1d = new JMenuItem("TripleExponential Moving Average");
-        JMenuItem g1e = new JMenuItem("Triple Exponential Average");
-        JMenuItem g1f = new JMenuItem("Trend");
-        JMenuItem g1g = new JMenuItem("Oscillators");
-        JMenuItem g1h = new JMenuItem("Volumes");
-        JMenuItem g1i = new JMenuItem("Bill Williams");
-        JMenuItem g1j = new JMenuItem("Custom");
-
-        g1.add(g1a);
-        g1.add(g1b);
-        g1.add(g1c);
-        g1.add(g1d);
-        g1.add(g1e);
-        g1.addSeparator();
-        g1.add(g1f);
-        g1.add(g1g);
-        g1.add(g1h);
-        g1.add(g1i);
-        g1.add(g1j);
+//        JMenu c1 = new JMenu("Languages");
+//        JMenuItem c2 = new JMenuItem("Toolbar");
+//        JMenuItem c3 = new JMenuItem("Status bar");
+//        JMenuItem c4 = new JMenuItem("Symbols");
+//        JMenuItem c5 = new JMenuItem("Depth of Market");
+//        JMenuItem c6 = new JMenuItem("Market Watch");
+//        JMenuItem c7 = new JMenuItem("Data Window");
+//        JMenuItem c8 = new JMenuItem("Navigator");
+//        JMenuItem c9 = new JMenuItem("Toolbox");
+//        JMenuItem c10 = new JMenuItem("Strategy Tester");
+//        JMenuItem c11 = new JMenuItem("Reports");
+//        JMenuItem c12 = new JMenuItem("Full Screen");
+//        JMenuItem l1 = new JMenuItem("Arabi");
+//        JMenuItem l2 = new JMenuItem("English");
+//        JMenuItem l3 = new JMenuItem("Hindi");
+//        JMenuItem l4 = new JMenuItem("Japanese");
+//        JMenuItem l5 = new JMenuItem("Bengali");
+//        JMenuItem l6 = new JMenuItem("Urdu");
+//
+//        c1.add(l1);
+//        c1.add(l2);
+//        c1.add(l3);
+//        c1.add(l4);
+//        c1.add(l5);
+//        c1.add(l6);
+//        jMenu3.add(c1);
+//        jMenu3.addSeparator();
+//        jMenu3.add(c2);
+//        jMenu3.add(c3);
+//        jMenu3.add(c4);
+//        jMenu3.addSeparator();
+//        jMenu3.add(c5);
+//        jMenu3.add(c6);
+//        jMenu3.addSeparator();
+//        jMenu3.add(c7);
+//        jMenu3.add(c8);
+//        jMenu3.add(c9);
+//        jMenu3.add(c10);
+//        jMenu3.addSeparator();
+//        jMenu3.add(c11);
+//        jMenu3.add(c12);
+//        JMenuItem d1 = new JMenuItem("Tile Windows");
+//        JMenuItem d2 = new JMenuItem("Cascade");
+//        JMenuItem d3 = new JMenuItem("Tile Horizontally");
+//        JMenuItem d4 = new JMenuItem("Tile Vertically");
+//        JMenuItem d5 = new JMenuItem("Arrange Icons");
+//        JMenuItem d6 = new JMenuItem("Resolutions");
+//        jMenu4.add(d1);
+//        jMenu4.addSeparator();
+//        jMenu4.add(d2);
+//        jMenu4.add(d3);
+//        jMenu4.add(d4);
+//        jMenu4.add(d5);
+//        jMenu4.addSeparator();
+//        jMenu4.add(d6);
+//        JMenu g1 = new JMenu("Indicators");
+//        JMenu g2 = new JMenu("Objects");
+//        JMenu g3 = new JMenu("Experts");
+//        JMenu g4 = new JMenu("Scripts");
+//        JMenuItem g1a = new JMenuItem("Williams Percent Range");
+//        JMenuItem g1b = new JMenuItem("Volumes");
+//        JMenuItem g1c = new JMenuItem("Variable Index Dynamic Average");
+//        JMenuItem g1d = new JMenuItem("TripleExponential Moving Average");
+//        JMenuItem g1e = new JMenuItem("Triple Exponential Average");
+//        JMenuItem g1f = new JMenuItem("Trend");
+//        JMenuItem g1g = new JMenuItem("Oscillators");
+//        JMenuItem g1h = new JMenuItem("Volumes");
+//        JMenuItem g1i = new JMenuItem("Bill Williams");
+//        JMenuItem g1j = new JMenuItem("Custom");
+//        g1.add(g1a);
+//        g1.add(g1b);
+//        g1.add(g1c);
+//        g1.add(g1d);
+//        g1.add(g1e);
+//        g1.addSeparator();
+//        g1.add(g1f);
+//        g1.add(g1g);
+//        g1.add(g1h);
+//        g1.add(g1i);
+//        g1.add(g1j);
         // insert -> objects
-        JMenuItem g2a = new JMenuItem("Vertical Line");
-        JMenuItem g2b = new JMenuItem("Horizontal line");
-        JMenuItem g2c = new JMenuItem("Trendline");
-        JMenuItem g2d = new JMenuItem("Trend By Angle");
-        JMenuItem g2e = new JMenuItem("Cyclic Lines");
-        JMenuItem g2f = new JMenuItem("Lines");
-        JMenuItem g2g = new JMenuItem("Channels");
-        JMenuItem g2h = new JMenuItem("Gann");
-        JMenuItem g2i = new JMenuItem("Fibonacci");
-        JMenuItem g2j = new JMenuItem("Elliott");
-        JMenuItem g2k = new JMenuItem("Shapes");
-        JMenuItem g2l = new JMenuItem("Arrows");
-        JMenuItem g2m = new JMenuItem("Graphical");
-
-        g2.add(g2a);
-        g2.add(g2b);
-        g2.add(g2c);
-        g2.add(g2d);
-        g2.add(g2e);
-        g2.addSeparator();
-        g2.add(g2f);
-        g2.add(g2g);
-        g2.add(g2h);
-        g2.add(g2i);
-        g2.add(g2j);
-        g2.add(g2k);
-        g2.add(g2l);
-        g2.add(g2m);
-
-        // insert -> experts
-        JMenuItem g3a = new JMenuItem("ExpertMACD");
-        JMenuItem g3b = new JMenuItem("ExpertMAMA");
-        JMenuItem g3c = new JMenuItem("ExpertMAPSAR");
-        JMenuItem g3d = new JMenuItem("ExpertMAPSARSizeOptimized");
-        JMenuItem g3e = new JMenuItem("ChartInChart");
-
-        g3.add(g3a);
-        g3.add(g3b);
-        g3.add(g3c);
-        g3.add(g3d);
-        g3.add(g3e);
-
-        // insert -> scripts
-        JMenuItem g4a = new JMenuItem("AccountInfoSample");
-        JMenuItem g4b = new JMenuItem("AccountDoubleSample");
-        JMenuItem g4c = new JMenuItem("CanvasSample");
-        JMenuItem g4d = new JMenuItem("HistogramChartSample");
-        JMenuItem g4e = new JMenuItem("LineChartSample");
-
-        g4.add(g4a);
-        g4.add(g4b);
-        g4.add(g4c);
-        g4.add(g4d);
-        g4.add(g4e);
-
-        jMenu6.add(g1);
-        jMenu6.add(g2);
-        jMenu6.add(g3);
-        jMenu6.add(g4);
-
-        JMenuItem f1 = new JMenuItem("Depth of Market");
-        JMenuItem f2 = new JMenuItem("Indicator List");
-        JMenuItem f3 = new JMenuItem("Objects");
-        JMenuItem f4 = new JMenuItem("Expert List");
+//        JMenuItem g2a = new JMenuItem("Vertical Line");
+//        JMenuItem g2b = new JMenuItem("Horizontal line");
+//        JMenuItem g2c = new JMenuItem("Trendline");
+//        JMenuItem g2d = new JMenuItem("Trend By Angle");
+//        JMenuItem g2e = new JMenuItem("Cyclic Lines");
+//        JMenuItem g2f = new JMenuItem("Lines");
+//        JMenuItem g2g = new JMenuItem("Channels");
+//        JMenuItem g2h = new JMenuItem("Gann");
+//        JMenuItem g2i = new JMenuItem("Fibonacci");
+//        JMenuItem g2j = new JMenuItem("Elliott");
+//        JMenuItem g2k = new JMenuItem("Shapes");
+//        JMenuItem g2l = new JMenuItem("Arrows");
+//        JMenuItem g2m = new JMenuItem("Graphical");
+//
+//        g2.add(g2a);
+//        g2.add(g2b);
+//        g2.add(g2c);
+//        g2.add(g2d);
+//        g2.add(g2e);
+//        g2.addSeparator();
+//        g2.add(g2f);
+//        g2.add(g2g);
+//        g2.add(g2h);
+//        g2.add(g2i);
+//        g2.add(g2j);
+//        g2.add(g2k);
+//        g2.add(g2l);
+//        g2.add(g2m);
+//        // insert -> experts
+//        JMenuItem g3a = new JMenuItem("ExpertMACD");
+//        JMenuItem g3b = new JMenuItem("ExpertMAMA");
+//        JMenuItem g3c = new JMenuItem("ExpertMAPSAR");
+//        JMenuItem g3d = new JMenuItem("ExpertMAPSARSizeOptimized");
+//        JMenuItem g3e = new JMenuItem("ChartInChart");
+//
+//        g3.add(g3a);
+//        g3.add(g3b);
+//        g3.add(g3c);
+//        g3.add(g3d);
+//        g3.add(g3e);
+//
+//        // insert -> scripts
+//        JMenuItem g4a = new JMenuItem("AccountInfoSample");
+//        JMenuItem g4b = new JMenuItem("AccountDoubleSample");
+//        JMenuItem g4c = new JMenuItem("CanvasSample");
+//        JMenuItem g4d = new JMenuItem("HistogramChartSample");
+//        JMenuItem g4e = new JMenuItem("LineChartSample");
+//        g4.add(g4a);
+//        g4.add(g4b);
+//        g4.add(g4c);
+//        g4.add(g4d);
+//        g4.add(g4e);
+//        jMenu6.add(g1);
+//        jMenu6.add(g2);
+//        jMenu6.add(g3);
+//        jMenu6.add(g4);
+//        JMenuItem f1 = new JMenuItem("Depth of Market");
+//        JMenuItem f2 = new JMenuItem("Indicator List");
+//        JMenuItem f3 = new JMenuItem("Objects");
+//        JMenuItem f4 = new JMenuItem("Expert List");
         JMenuItem f5 = new JMenuItem("Bar Chart");
         JMenuItem f6 = new JMenuItem("Candlesticks");
         JMenuItem f7 = new JMenuItem("Line Chart");
         JMenu f8 = new JMenu("Timeframes");
-        JMenuItem f9 = new JMenuItem("Templates");
-        JMenuItem f10 = new JMenuItem("Grid");
-        JMenuItem f11 = new JMenuItem("Auto Scroll");
-        JMenuItem f12 = new JMenuItem("Chart Shift");
-        JMenuItem f13 = new JMenuItem("Volumes");
-        JMenuItem f14 = new JMenuItem("Tick Volumes");
-        JMenuItem f15 = new JMenuItem("Trade Levels");
-        JMenuItem f16 = new JMenuItem("Trade History");
-        JMenuItem f17 = new JMenuItem("Zoom in");
-        JMenuItem f18 = new JMenuItem("Step by Step");
-        JMenuItem f19 = new JMenuItem("Properties");
+//        JMenuItem f9 = new JMenuItem("Templates");
+//        JMenuItem f10 = new JMenuItem("Grid");
+//        JMenuItem f11 = new JMenuItem("Auto Scroll");
+//        JMenuItem f12 = new JMenuItem("Chart Shift");
+//        JMenuItem f13 = new JMenuItem("Volumes");
+//        JMenuItem f14 = new JMenuItem("Tick Volumes");
+//        JMenuItem f15 = new JMenuItem("Trade Levels");
+//        JMenuItem f16 = new JMenuItem("Trade History");
+//        JMenuItem f17 = new JMenuItem("Zoom in");
+//        JMenuItem f18 = new JMenuItem("Step by Step");
+//        JMenuItem f19 = new JMenuItem("Properties");
 
         // chart -> timeframes
         JMenuItem f8a = new JMenuItem("1 Minute");
@@ -810,80 +866,30 @@ public class Metacustomer extends JFrame {
             rightPanel.browser_.loadURL(HomeChartUrl);
         });
         f6.addActionListener((ActionEvent e) -> {
-//            System.out.println("It works");
-//            String initialUrl = Metacustomer.HomeChartUrl;
-//            String[] initialUrlTypeBreak = initialUrl.split("type=");
-//            String[] initialUrlTypeBreakRightBreak = initialUrlTypeBreak[1].split("&");
-//            initialUrlTypeBreakRightBreak[0] = "candleSticks";
-//            initialUrlTypeBreak[1] = String.join("&", initialUrlTypeBreakRightBreak);
-//            initialUrl = String.join("type=", initialUrlTypeBreak);
-//            System.out.println("URL: " + initialUrl);
-//            Metacustomer.HomeChartUrl = initialUrl;
-//            
-//            rightPanel.browser_.loadURL(HomeChartUrl);
-
             type = "candle";
             String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
             rightPanel.browser_.loadURL(newURL);
         });
         f7.addActionListener((ActionEvent e) -> {
-//            System.out.println("It works");
-//            String initialUrl = Metacustomer.HomeChartUrl;
-//            String[] initialUrlTypeBreak = initialUrl.split("type=");
-//            String[] initialUrlTypeBreakRightBreak = initialUrlTypeBreak[1].split("&");
-//            initialUrlTypeBreakRightBreak[0] = "area";
-//            initialUrlTypeBreak[1] = String.join("&", initialUrlTypeBreakRightBreak);
-//            initialUrl = String.join("type=", initialUrlTypeBreak);
-//            System.out.println("URL: " + initialUrl);
-//            Metacustomer.HomeChartUrl = initialUrl;
-
             type = "area";
             String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
             rightPanel.browser_.loadURL(newURL);
 
-//            rightPanel.browser_.loadURL(HomeChartUrl);            
         });
-        jMenu7.add(f1);
-        jMenu7.add(f2);
-        jMenu7.add(f3);
-        jMenu7.add(f4);
+//        jMenu7.add(f1);
+//        jMenu7.add(f2);
+//        jMenu7.add(f3);
+//        jMenu7.add(f4);
         jMenu7.addSeparator();
         jMenu7.add(f5);
         jMenu7.add(f6);
         jMenu7.add(f7);
         jMenu7.addSeparator();
         jMenu7.add(f8);
-        jMenu7.add(f9);
-        jMenu7.add(f10);
-        jMenu7.addSeparator();
-        jMenu7.add(f11);
-        jMenu7.add(f12);
-        jMenu7.addSeparator();
-        jMenu7.add(f13);
-        jMenu7.add(f14);
-        jMenu7.add(f15);
-        jMenu7.addSeparator();
-        jMenu7.add(f16);
-        jMenu7.add(f17);
-        jMenu7.add(f18);
-        jMenu7.addSeparator();
-        jMenu7.add(f19);
-
-        JMenuItem e1 = new JMenuItem("Help Topics");
-        JMenuItem e2 = new JMenuItem("What's New");
-        jMenu5.add(e1);
-        jMenu5.add(e2);
     }
 
     public Metacustomer(Socket socket) {
         Metacustomer.socket = socket;
-//        JSONObject userpositions = new JSONObject();
-//        try {
-//            userpositions.put("userId", Metacustomer.userId);
-//            socket.emit("userpositions", userpositions);
-//        } catch (JSONException ex) {
-//            System.out.println(ex.getMessage());
-//        }
 
         setTitle("Rapid Trader");
         menubarsetup();

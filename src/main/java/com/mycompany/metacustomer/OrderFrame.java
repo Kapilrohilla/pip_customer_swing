@@ -4,13 +4,13 @@
  */
 package com.mycompany.metacustomer;
 
-import io.socket.client.Socket;
-import java.awt.Dimension;
-import javax.swing.JFrame;
-import javax.swing.JSplitPane;
+//import io.socket.client.Socket;
+//import java.awt.Dimension;
+//import javax.swing.JFrame;
+//import javax.swing.JSplitPane;
 
 import com.mycompany.metacustomer.Utility.APIs;
-import javax.swing.JPanel;
+//import javax.swing.JPanel;
 
 /**
  *

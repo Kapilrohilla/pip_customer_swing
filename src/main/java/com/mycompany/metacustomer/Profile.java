@@ -4,8 +4,12 @@
  */
 package com.mycompany.metacustomer;
 
+import com.mycompany.metacustomer.Auth.AuthContainer;
+import com.mycompany.metacustomer.History.Trade;
 import com.mycompany.metacustomer.Utility.APIs;
 import java.io.IOException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -17,7 +21,7 @@ import org.json.JSONObject;
  *
  * @author Kapil
  */
-public class Profile extends javax.swing.JFrame {
+public class Profile extends javax.swing.JDialog {
 
     /**
      * Creates new form Profile
@@ -27,28 +31,34 @@ public class Profile extends javax.swing.JFrame {
     String balance;
     String accountType = "Real";
     String groupCategory;
-
+    
     public Profile() {
         initComponents();
         groupCategory = Metacustomer.groupCategory;
         String apiUrl = APIs.GET_GROUP_CAT + "/" + groupCategory;
+        System.out.println("apiUrl: " + apiUrl);
         balance = Metacustomer.bal;
-        userId = Metacustomer.userId;
+        name = Metacustomer.name;
+        balance = String.format("%.2f", Float.parseFloat(balance));
+//        userId = Metacustomer.userId;
+        userId = Metacustomer.accountId;
         OkHttpClient client = new OkHttpClient();
         Request req = new Request.Builder().url(apiUrl).build();
         Call newCall = client.newCall(req);
-        
+        setModal(true);
         try {
             Response res = newCall.execute();
             if (res.isSuccessful()) {
                 String body = res.body().string();
+                System.out.println("profiel body: " + body);
                 try {
                     JSONObject resBody = new JSONObject(body);
                     boolean rstatus = resBody.getBoolean("status");
                     if (rstatus) {
                         JSONObject rcJSON = resBody.getJSONObject("c");
+                        System.out.println("rcJSON: " + rcJSON);
                         String catName = rcJSON.getString("title");
-                        if (catName == "Demo Groups") {
+                        if ("Demo Groups".equals(catName)) {
                             accountType = "Demo";
                         }
                     }
@@ -86,6 +96,7 @@ public class Profile extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -109,6 +120,13 @@ public class Profile extends javax.swing.JFrame {
 
         jLabel9.setText(" ");
 
+        jButton1.setText("Logout");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -116,6 +134,7 @@ public class Profile extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -152,11 +171,39 @@ public class Profile extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel9))
-                .addContainerGap(219, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(179, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        int option = JOptionPane.showConfirmDialog(Profile.this, "Are you sure?");
+        System.out.println("option: " + option);
+        if (0 == option) {
+            HandlePreference pref = new HandlePreference();
+            try {
+                boolean isLogoutSuccess = pref.logout();
+                if (isLogoutSuccess) {
+//                    dispose();
+//                    Metacustomer.
+                    LeftPanel.watchlistData.clear();
+                    LeftPanel.tableModel = new DefaultTableModel();
+                    Trade.model = new DefaultTableModel();
+                    
+                    new AuthContainer().setVisible(true);
+                } else {
+                    System.out.println("Failed to logout");
+                }
+            } catch (Exception ex) {
+                System.out.println("Something went wrong while disconnecting / logout");
+            }
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -194,6 +241,7 @@ public class Profile extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

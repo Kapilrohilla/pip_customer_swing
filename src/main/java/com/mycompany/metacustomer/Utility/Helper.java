@@ -4,9 +4,15 @@
  */
 package com.mycompany.metacustomer.Utility;
 
+//import io.socket.client.Url;
+import com.mycompany.metacustomer.Metacustomer;
+import static com.mycompany.metacustomer.Metacustomer.HomeChartUrl;
+import static com.mycompany.metacustomer.Metacustomer.rightPanel;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  *
@@ -42,6 +48,9 @@ public class Helper {
         String toRet = "";
         try {
             toRet = json.getString(key);
+            if ("null".equals(toRet)) {
+                toRet = "";
+            }
         } catch (JSONException ex) {
             System.out.println("Error: " + key + " not found, " + ex.getMessage());
         }
@@ -56,5 +65,52 @@ public class Helper {
             System.out.println("Error: " + key + " not found, " + ex.getMessage());
         }
         return toRet;
+    }
+
+    public static String updateQueryParamterInUrl(String url, String param, String value) throws MalformedURLException {
+        URL uri = new URL(url);
+        String host = uri.getHost();
+        int port = uri.getPort();
+        String protocol = uri.getProtocol();
+        String path = uri.getPath();
+        String queryString = uri.getQuery();
+
+        String[] queries = queryString.split("&");
+        String[] newQueries = new String[queries.length];
+        boolean isUpdated = false;
+        for (int i = 0; i < queries.length; i++) {
+            String query = queries[i];
+            String[] aQuery = query.split("=");
+            if (param.equals(aQuery[0])) {
+                isUpdated = true;
+                aQuery[1] = value;
+            }
+            newQueries[i] = String.join("=", aQuery);
+        }
+
+        String newQueryString = String.join("&", newQueries);
+        String newUrlString;
+        if (isUpdated) {
+            newUrlString = protocol + "://" + host + ":" + port + path + "?" + newQueryString;
+        } else {
+            newUrlString = protocol + "://" + host + ":" + port + path + "?" + newQueryString + "&" + param + "=" + value;
+        }
+
+        System.out.println("newUrlString: " + newUrlString);
+        return newUrlString;
+    }
+
+    public static void updateBrowserChartThroughJava(String param, String value) {
+        String initialUrl = Metacustomer.HomeChartUrl;
+        try {
+            String newUrl = Helper.updateQueryParamterInUrl(initialUrl, param, value);
+            Metacustomer.HomeChartUrl = newUrl;
+
+        } catch (MalformedURLException ex) {
+            System.out.println(ex.getMessage());
+            System.out.println(ex.getStackTrace());
+
+        }
+        rightPanel.browser_.loadURL(HomeChartUrl);
     }
 }

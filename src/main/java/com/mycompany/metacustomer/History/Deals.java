@@ -96,13 +96,20 @@ public class Deals extends javax.swing.JPanel {
             String direction = directionNum == 0 ? "Out" : "In";
             double volume = Helper.getJSONDouble(jso, "volume");
             double price = Helper.getJSONDouble(jso, "price");
+            String price2Display = String.format("%.2f", price);
             double stopLoss = Helper.getJSONDouble(jso, "stopLoss");
+            String stopLoss2Display = String.format("%.2f", stopLoss);
             double takeProfit = Helper.getJSONDouble(jso, "takeProfit");
+            String takeProfit2Display = String.format("%.2f", takeProfit);
             double comission = Helper.getJSONDouble(jso, "comission");
+            String comission2Display = String.format("%.2f", comission);
             totalCommission += comission;
             double fee = Helper.getJSONDouble(jso, "fee");
+            String fee2Display = String.format("%.2f", fee);
             double swap = Helper.getJSONDouble(jso, "swap");
+            String swap2Display = String.format("%.2f", swap);
             double profit = Helper.getJSONDouble(jso, "profit");
+            String profit2display = String.format("%.2f", profit);
             totalProfit += profit;
             String change = "";
             String initialComment = Helper.getJSONString(jso, "comment");
@@ -110,7 +117,7 @@ public class Deals extends javax.swing.JPanel {
             if ("null".equals(initialComment)) {
                 comment = initialComment;
             }
-            String[] rowData = {time, symbol, deal, order, type, direction, volume + "", price + "", stopLoss + "", takeProfit + "", comission + "", fee + "", swap + "", profit + "", change, comment};
+            String[] rowData = {time, symbol, deal, order, type, direction, volume + "", price2Display, stopLoss2Display, takeProfit2Display, comission2Display, fee2Display, swap2Display, profit2display, change, comment};
             model.addRow(rowData);
         }
 
