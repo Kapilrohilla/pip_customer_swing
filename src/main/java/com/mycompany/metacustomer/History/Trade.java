@@ -9,6 +9,7 @@ import com.mycompany.metacustomer.LeftPanel;
 import com.mycompany.metacustomer.Metacustomer;
 import static com.mycompany.metacustomer.Metacustomer.bal;
 import com.mycompany.metacustomer.OrderFrame;
+import com.mycompany.metacustomer.Utility.Helper;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import java.awt.event.ActionEvent;
@@ -45,6 +46,7 @@ public class Trade extends javax.swing.JPanel {
     public static JLabel j1;
     private boolean isBalanceSet = false;
     private ArrayList<JSONObject> watchlistData = new ArrayList<>();
+    private int selectedRow = -1;
     public static DefaultTableModel model = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -359,16 +361,11 @@ public class Trade extends javax.swing.JPanel {
             double fm = eq - mmm;
             double levelper = ((eq / mmm) * 100);
             String freemargin = String.format("%.2f", fm);
-//            String level="Level : " + String.format("%.2f", levelper + "%");
             j1.setText("Balance : " + bal + " Equity : " + eq + " Margin : " + mmm + " FreeMargin : " + freemargin + " Level : " + levelper);
-//            System.out.println("Balance : "+bal+" Equity : "+eq+" Margin : "+mmm+" FreeMargin : "+freemargin);
         }
 
     }
 
-//    public void setTableData(JSONArray closedPositions) {
-//        System.out.println("setTableData: " + closedPositions.length());
-//       }
     private void table() throws JSONException {
 
         String[] columns = {"Symbol", "Ticket", "Time", "type", "Volume", "Price", "StopLoss", "TakeProfit", "Swap", "Comment", "Current Price", "Profit", "Action"};
@@ -384,66 +381,23 @@ public class Trade extends javax.swing.JPanel {
             for (int i = 0; i < jsa.length(); i++) {
                 JSONObject jso = jsa.getJSONObject(i);
 
-                String symbol = jso.getString("symbol");
-                String type;
-                int typeNum = jso.getInt("type");
-                switch (typeNum) {
-                    case 0: {
-                        type = "Sell";
-                        break;
-                    }
-                    case 1: {
-                        type = "Buy";
-                        break;
-                    }
-                    case 2: {
-                        type = "Buy Limit";
-                        break;
-                    }
-                    case 3: {
-                        type = "Sell Limit";
-                        break;
-                    }
-                    case 4: {
-                        type = "Buy Stop";
-                        break;
-                    }
-                    case 5: {
-                        type = "Buy Stop Limit";
-                        break;
-                    }
-                    case 6: {
-                        type = "Sell Stop Limit";
-                        break;
-                    }
-                    default: {
-                        type = "Invalid Type";
-                    }
-                }
-                String stopLoss;
-                String createdAt = jso.getString("createdAt");
+//                String symbol = jso.getString("symbol");
+                String symbol = Helper.getJSONString(jso, "symbol");
 
-                try {
-                    stopLoss = jso.getDouble("stopLoss") + "";
-                } catch (JSONException ex) {
-                    stopLoss = "";
-                }
-                String takeProfit;
-                try {
-                    takeProfit = jso.getDouble("takeProfit") + "";
-                } catch (JSONException ex) {
-                    takeProfit = "";
-                }
-                String volume;
-                try {
-                    volume = jso.getDouble("volume") + "";
-                } catch (JSONException ex) {
-                    volume = "";
-                }
+                int typeNum = Helper.getJSONInt(jso, "type");
+                String type = Helper.getMappedOrderType(typeNum);
 
-                String price = jso.getDouble("price") + "";
-
-                String ticket = jso.getString("ticket");
+                String createdAt = Helper.getJSONString(jso, "createdAt");
+                double stopLoss = Helper.getJSONDouble(jso, "stopLoss");
+                String stopLossS = stopLoss + "";
+                double takeProfit = Helper.getJSONDouble(jso, "takeProfit");
+                String takeProfitS = takeProfit + "";
+                double volume = Helper.getJSONDouble(jso, "volume");
+                String volumeS = volume + "";
+                double price = Helper.getJSONDouble(jso, "price");
+                String priceS = price + "";
+                String ticket = Helper.getJSONString(jso, "ticket");
+//                String ticket = jso.getString("ticket");
 
                 String time = createdAt;
                 try {
@@ -472,7 +426,7 @@ public class Trade extends javax.swing.JPanel {
                 if (profitNum == 0) {
                     profit = "Placed";
                 }
-                String[] rowData = {symbol, ticket, createdAt, type, volume, price, stopLoss, takeProfit, swap, comment, "", profit, "Close Position"};
+                String[] rowData = {symbol, ticket, createdAt, type, volumeS, priceS, stopLossS, takeProfitS, swap, comment, "", profit, "Close Position"};
                 watchlistData.add(jso);
                 model.addRow(rowData);
                 System.out.println("trade updated.");
@@ -489,7 +443,7 @@ public class Trade extends javax.swing.JPanel {
         JMenuItem menuItem4 = new JMenuItem("Close All Positions");
         JMenuItem menuItem5 = new JMenuItem("Close Profitable Positions");
         JMenuItem menuItem6 = new JMenuItem("Close Losing Positions");
-
+        JMenuItem menuItem7 = new JMenuItem("Modify");
         jp.add(menuItem1);
 
         jp.add(menuItem2);
@@ -504,6 +458,7 @@ public class Trade extends javax.swing.JPanel {
 
         jp.add(menuItem6);
 
+        jp.add(menuItem7);
         menuItem1.addActionListener(
                 new ActionListener() {
             @Override
@@ -512,9 +467,26 @@ public class Trade extends javax.swing.JPanel {
                 new OrderFrame().setVisible(true);
             }
 
-        }
-        );
+        });
 
+        menuItem7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedRow != -1) {
+//                    try {
+                    JSONObject jso = watchlistData.get(selectedRow);
+                    String positionId = Helper.getJSONString(jso, "_id");
+                    String ticket = Helper.getJSONString(jso, "ticket");
+                    String stopLoss = Helper.getJSONString(jso, "stopLoss");
+                    String takeProfit = Helper.getJSONString(jso, "takeProfit");
+                    new ModifyPosition(positionId, ticket, stopLoss, takeProfit).setVisible(true);
+//                    } catch (JSONException ex) {
+//                        System.out.println(ex.getMessage());
+//                    }
+
+                }
+            }
+        });
         menuItem4.addActionListener(
                 new ActionListener() {
             @Override
@@ -614,10 +586,10 @@ public class Trade extends javax.swing.JPanel {
                     jp.show(e.getComponent(), e.getX(), e.getY());
                 }
 
-                int selectedRow = jTable1.rowAtPoint(e.getPoint());
+                selectedRow = jTable1.rowAtPoint(e.getPoint());
                 int selectedColumn = jTable1.columnAtPoint(e.getPoint());
                 int totalColumn = jTable1.getColumnCount();
-
+                selectedRow = jTable1.rowAtPoint(e.getPoint());
                 if (totalColumn - 1 == selectedColumn) {
                     try {
                         String positionId = watchlistData.get(selectedRow).getString("_id");

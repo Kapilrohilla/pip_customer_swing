@@ -422,26 +422,26 @@ public class Metacustomer extends JFrame {
         jMenu2.add(b1);
         JMenuItem f5 = new JMenuItem("Bar Chart");
         JMenuItem f6 = new JMenuItem("Candlesticks");
-        JMenuItem f7 = new JMenuItem("Line Chart");
-        JMenu f8 = new JMenu("Timeframes");
+        JMenuItem f7 = new JMenuItem("Area Chart");
+        JMenu f8 = new JMenu("Tizmeframes");
         JMenu f9 = new JMenu("Templates");
-        JMenuItem blackNRed = new JMenuItem("Black-Red");
-        JMenuItem redNGreen = new JMenuItem("Red-Green");
-        JMenuItem blackNWhite = new JMenuItem("Black-White");
+        JMenuItem redwhite = new JMenuItem("Red-white");
+        JMenuItem redblue = new JMenuItem("red-blue");
+        JMenuItem redgreen = new JMenuItem("red-green");
 
-        blackNRed.addActionListener(((e) -> {
-            Helper.updateBrowserChartThroughJava("color", "black-red");
+        redwhite.addActionListener(((e) -> {
+            Helper.updateBrowserChartThroughJava("color", "red-white");
         }));
-        redNGreen.addActionListener(((e) -> {
-            Helper.updateBrowserChartThroughJava("color", "black-red");
+        redblue.addActionListener(((e) -> {
+            Helper.updateBrowserChartThroughJava("color", "red-blue");
         }));
-        blackNWhite.addActionListener(((e) -> {
-            Helper.updateBrowserChartThroughJava("color", "black-red");
+        redgreen.addActionListener(((e) -> {
+            Helper.updateBrowserChartThroughJava("color", "red-green");
         }));
 
-        f9.add(blackNRed);
-        f9.add(redNGreen);
-        f9.add(blackNWhite);
+        f9.add(redwhite);
+        f9.add(redblue);
+        f9.add(redgreen);
         JMenu volumes = new JMenu("Volumes");
         JMenuItem showVolumes = new JMenuItem("Show");
         JMenuItem hideVolumes = new JMenuItem("Hide");
@@ -521,28 +521,30 @@ public class Metacustomer extends JFrame {
         f8.add(f8j);
         f8.add(f8k);
         f5.addActionListener((ActionEvent e) -> {
-            System.out.println("It works");
-            String initialUrl = Metacustomer.HomeChartUrl;
-            String[] initialUrlTypeBreak = initialUrl.split("type=");
-            String[] initialUrlTypeBreakRightBreak = initialUrlTypeBreak[1].split("&");
-            initialUrlTypeBreakRightBreak[0] = "bar";
-            initialUrlTypeBreak[1] = String.join("&", initialUrlTypeBreakRightBreak);
-            initialUrl = String.join("type=", initialUrlTypeBreak);
-            System.out.println("URL: " + initialUrl);
-            Metacustomer.HomeChartUrl = initialUrl;
-
-            rightPanel.browser_.loadURL(HomeChartUrl);
+            Helper.updateBrowserChartThroughJava("type", "bar");
+//            System.out.println("It works");
+//            String initialUrl = Metacustomer.HomeChartUrl;
+//            String[] initialUrlTypeBreak = initialUrl.split("type=");
+//            String[] initialUrlTypeBreakRightBreak = initialUrlTypeBreak[1].split("&");
+//            initialUrlTypeBreakRightBreak[0] = "bar";
+//            initialUrlTypeBreak[1] = String.join("&", initialUrlTypeBreakRightBreak);
+//            initialUrl = String.join("type=", initialUrlTypeBreak);
+//            System.out.println("URL: " + initialUrl);
+//            Metacustomer.HomeChartUrl = initialUrl;
+//
+//            rightPanel.browser_.loadURL(HomeChartUrl);
         });
         f6.addActionListener((ActionEvent e) -> {
-            type = "candle";
-            String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
-            rightPanel.browser_.loadURL(newURL);
+            Helper.updateBrowserChartThroughJava("type", "candle");
+//            type = "candle";
+//            String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
+//            rightPanel.browser_.loadURL(newURL);
         });
         f7.addActionListener((ActionEvent e) -> {
-            type = "area";
-            String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
-            rightPanel.browser_.loadURL(newURL);
-
+//            type = "area";
+//            String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
+//            rightPanel.browser_.loadURL(newURL);
+            Helper.updateBrowserChartThroughJava("type", "area");
         });
 
         jMenu7.addSeparator();
