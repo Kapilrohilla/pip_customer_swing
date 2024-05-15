@@ -5,7 +5,7 @@
 package com.mycompany.metacustomer.History;
 
 import com.mycompany.metacustomer.Utility.APIs;
-import com.mycompany.metacustomer.LeftPanel;
+//import com.mycompany.metacustomer.LeftPanel;
 import com.mycompany.metacustomer.Metacustomer;
 import static com.mycompany.metacustomer.Metacustomer.bal;
 import com.mycompany.metacustomer.OrderFrame;
@@ -438,7 +438,7 @@ public class Trade extends javax.swing.JPanel {
         jTable1.setModel(model);
         JPopupMenu jp = new JPopupMenu();
         JMenuItem menuItem1 = new JMenuItem("New Order");
-        JMenuItem menuItem2 = new JMenuItem("Close Position");
+        JMenuItem menuItem2 = new JMenuItem("Partially Close Position");
         JMenuItem menuItem3 = new JMenuItem("Delete");
         JMenuItem menuItem4 = new JMenuItem("Close All Positions");
         JMenuItem menuItem5 = new JMenuItem("Close Profitable Positions");
@@ -459,8 +459,7 @@ public class Trade extends javax.swing.JPanel {
         jp.add(menuItem6);
 
         jp.add(menuItem7);
-        menuItem1.addActionListener(
-                new ActionListener() {
+        menuItem1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e
             ) {
@@ -468,27 +467,35 @@ public class Trade extends javax.swing.JPanel {
             }
 
         });
+        menuItem2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedRow != -1) {
+                    JSONObject jso = watchlistData.get(selectedRow);
+                    String symbol = Helper.getJSONString(jso, "symbol");
+                    String ticket = Helper.getJSONString(jso, "ticket");
+                    System.out.println(symbol + " " + ticket);
+                    String initialVolume = (String) model.getValueAt(selectedRow, 4);
+                    double initialVolumeD = Double.parseDouble(initialVolume);
+                    new PartiallyClosePosition(symbol, ticket, initialVolumeD).setVisible(true);
+                }
 
+            }
+        });
         menuItem7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedRow != -1) {
-//                    try {
                     JSONObject jso = watchlistData.get(selectedRow);
                     String positionId = Helper.getJSONString(jso, "_id");
                     String ticket = Helper.getJSONString(jso, "ticket");
-                    String stopLoss = Helper.getJSONString(jso, "stopLoss");
-                    String takeProfit = Helper.getJSONString(jso, "takeProfit");
+                    String stopLoss = (String) model.getValueAt(selectedRow, 6);
+                    String takeProfit = (String) model.getValueAt(selectedRow, 7);
                     new ModifyPosition(positionId, ticket, stopLoss, takeProfit).setVisible(true);
-//                    } catch (JSONException ex) {
-//                        System.out.println(ex.getMessage());
-//                    }
-
                 }
             }
         });
-        menuItem4.addActionListener(
-                new ActionListener() {
+        menuItem4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e
             ) {

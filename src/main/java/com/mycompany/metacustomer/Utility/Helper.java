@@ -67,6 +67,16 @@ public class Helper {
         return toRet;
     }
 
+    public static boolean getJSONBoolean(JSONObject json, String key) {
+        boolean toRet = false;
+        try {
+            toRet = json.getBoolean(key);
+        } catch (JSONException ex) {
+            toRet = false;
+        }
+        return toRet;
+    }
+
     public static String updateQueryParamterInUrl(String url, String param, String value) throws MalformedURLException {
         URL uri = new URL(url);
         String host = uri.getHost();

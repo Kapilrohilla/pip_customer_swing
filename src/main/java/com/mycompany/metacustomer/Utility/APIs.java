@@ -51,6 +51,8 @@ public class APIs {
     public static String GET_CLOSED_POSITION = BASE_URL + "get-closed-positions";
 
     public static String GET_GROUP_CAT = BASE_URL + "groupcat"; // GET_GROUP_CAT + /6625f4e32c967a86d4ea91f6
-    
+
     public static String SERVER_JSON = "https://rapidtrader.net/livesrvr/bfrehh34/kbhirr3ke/baselilerigh.json";
+
+    public static String UPDATE_POSITION = BASE_URL + "update-position";
 }

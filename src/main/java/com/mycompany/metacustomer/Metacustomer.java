@@ -249,7 +249,6 @@ public class Metacustomer extends JFrame {
                     frame = new AddSymbol2BidAsk();
                     frame.setVisible(true);
                 } catch (JSONException ex) {
-//                    Logger.getLogger(Metacustomer.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -270,9 +269,6 @@ public class Metacustomer extends JFrame {
             try {
                 JSONObject js = new JSONObject(userdata);
                 JSONObject user = js.getJSONObject("user");
-//                bal = user.getString("balance");
-//                userId = user.getString("_id");
-//                name = user.getString("name");
                 bal = Helper.getJSONString(user, "balance");
                 userId = Helper.getJSONString(user, "_id");
                 name = Helper.getJSONString(user, "name");
@@ -347,18 +343,8 @@ public class Metacustomer extends JFrame {
 
     private void menusetup() {
         JMenu a1 = new JMenu("New Chart");
-
-//        JMenuItem a2 = new JMenuItem("Profiles");
         JMenuItem a11 = new JMenuItem("My Profile");
-//        JMenuItem a3 = new JMenuItem("Close");
-//        JMenuItem a4 = new JMenuItem("Save");
-//        JMenuItem a5 = new JMenuItem("Save as Picture");
         JMenuItem a15 = new JMenuItem("Add symbol");
-//        JMenuItem a6 = new JMenuItem("Open Data Folder");
-//        JMenuItem a7 = new JMenuItem("Print");
-//        JMenuItem a8 = new JMenuItem("Print Preview");
-//        JMenuItem a9 = new JMenuItem("Print Setup");
-//        JMenuItem a10 = new JMenuItem("Open an Account");
         JMenuItem a13 = new JMenuItem("Logout");
 
         String watchlist_url = APIs.GET_WATCHLIST_DATA;
@@ -522,28 +508,11 @@ public class Metacustomer extends JFrame {
         f8.add(f8k);
         f5.addActionListener((ActionEvent e) -> {
             Helper.updateBrowserChartThroughJava("type", "bar");
-//            System.out.println("It works");
-//            String initialUrl = Metacustomer.HomeChartUrl;
-//            String[] initialUrlTypeBreak = initialUrl.split("type=");
-//            String[] initialUrlTypeBreakRightBreak = initialUrlTypeBreak[1].split("&");
-//            initialUrlTypeBreakRightBreak[0] = "bar";
-//            initialUrlTypeBreak[1] = String.join("&", initialUrlTypeBreakRightBreak);
-//            initialUrl = String.join("type=", initialUrlTypeBreak);
-//            System.out.println("URL: " + initialUrl);
-//            Metacustomer.HomeChartUrl = initialUrl;
-//
-//            rightPanel.browser_.loadURL(HomeChartUrl);
         });
         f6.addActionListener((ActionEvent e) -> {
             Helper.updateBrowserChartThroughJava("type", "candle");
-//            type = "candle";
-//            String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
-//            rightPanel.browser_.loadURL(newURL);
         });
         f7.addActionListener((ActionEvent e) -> {
-//            type = "area";
-//            String newURL = HomeChartUrl + "&symbol=" + Metacustomer.symbol + "&type=" + type;
-//            rightPanel.browser_.loadURL(newURL);
             Helper.updateBrowserChartThroughJava("type", "area");
         });
 

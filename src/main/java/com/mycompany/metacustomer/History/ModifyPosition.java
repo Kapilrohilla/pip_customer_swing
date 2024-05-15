@@ -4,6 +4,13 @@
  */
 package com.mycompany.metacustomer.History;
 
+import com.mycompany.metacustomer.Utility.APIs;
+import com.mycompany.metacustomer.Utility.ApiServices;
+import com.mycompany.metacustomer.Utility.Helper;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +18,7 @@ import org.json.JSONObject;
  *
  * @author Kapil
  */
-public class ModifyPosition extends javax.swing.JFrame {
+public class ModifyPosition extends javax.swing.JDialog {
 
     /**
      * Creates new form ModifyPosition
@@ -21,21 +28,23 @@ public class ModifyPosition extends javax.swing.JFrame {
     String positionTicket;
     String stopLoss;
     String takeProfit;
-
+    
     public ModifyPosition(String positionId, String positionTicket, String stopLoss, String takeProfit) {
         initComponents();
         this.positionId = positionId;
         this.positionTicket = positionTicket;
         this.stopLoss = stopLoss;
         this.takeProfit = takeProfit;
-
+        
         this.title = "Modify Position #" + positionTicket;
         jLabel3.setText(this.title);
-
+        
         jTextField1.setText(this.stopLoss);
         jTextField2.setText(this.takeProfit);
+        
+        setModal(true);
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -111,10 +120,40 @@ public class ModifyPosition extends javax.swing.JFrame {
         try {
             jso.put("stopLoss", stopLoss);
             jso.put("takeProfit", takeProfit);
+            jso.put("positionId", this.positionId);
+            
+            ApiServices services = new ApiServices();
+            String url = APIs.UPDATE_POSITION;
+            try {
+                Response res = services.postDataWithoutToken(url, jso);
+                if (res.isSuccessful()) {
+                    ResponseBody body = res.body();
+                    String apiString = body.string();
+                    JSONObject resJSON = new JSONObject(apiString);
+                    String message = Helper.getJSONString(resJSON, "message");
+                    if (!"".equalsIgnoreCase(message)) {
+                        JOptionPane.showMessageDialog(this, message);
+                        if ("position updated successfully.".equals(message)) {
+                            int tradeRowCount = Trade.model.getRowCount();
+                            for (int i = 0; i < tradeRowCount; i++) {
+                                if (positionTicket.equals(Trade.model.getValueAt(i, 1))) {
+                                    Trade.model.setValueAt(stopLoss, i, 6);
+                                    Trade.model.setValueAt(takeProfit, i, 7);
+                                };
+                            }
+                            dispose();
+                        }
+                    }
+                }
+                
+            } catch (IOException ex) {
+                ex.getStackTrace();
+            }
+            
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
-
+        
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
