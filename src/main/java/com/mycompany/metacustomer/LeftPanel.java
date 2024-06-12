@@ -58,8 +58,6 @@ public class LeftPanel extends javax.swing.JPanel {
     public LeftPanel() {
         try {
             tabledata();
-//            copiedSocket();
-//            copiedSocket2();
             copiedSocke3();
         } catch (Exception ex) {
             System.out.println("exception occurred in construcotr");

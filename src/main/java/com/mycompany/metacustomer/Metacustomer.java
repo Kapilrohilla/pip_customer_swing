@@ -76,7 +76,7 @@ public class Metacustomer extends JFrame {
     public static void main(String[] args) {
 
         HandlePreference savedLoginCredentials = new HandlePreference();
-//        savedLoginCredentials.logout();
+        // savedLoginCredentials.logout();
         String token = savedLoginCredentials.retrieveToken();
         System.out.println("token: " + token);
         if ("not found".equals(token)) {
@@ -267,7 +267,19 @@ public class Metacustomer extends JFrame {
             Response res = services.getDataWithToken(APIs.USER, Metacustomer.loginToken);
             String userdata = res.body().string();
             try {
+
                 JSONObject js = new JSONObject(userdata);
+                try {
+                    boolean status = js.getBoolean("status");
+                    if (status == false) {
+                        JOptionPane.showMessageDialog(this, "Token is expred.");
+                        AuthContainer auth = new AuthContainer();
+                        auth.setVisible(true);
+                    }
+                } catch (JSONException ex) {
+                    System.out.println(ex.getMessage());
+                }
+                System.out.println("js: " + js);
                 JSONObject user = js.getJSONObject("user");
                 bal = Helper.getJSONString(user, "balance");
                 userId = Helper.getJSONString(user, "_id");
@@ -344,7 +356,6 @@ public class Metacustomer extends JFrame {
     private void menusetup() {
         JMenu a1 = new JMenu("New Chart");
         JMenuItem a11 = new JMenuItem("My Profile");
-        JMenuItem a15 = new JMenuItem("Add symbol");
         JMenuItem a13 = new JMenuItem("Logout");
 
         String watchlist_url = APIs.GET_WATCHLIST_DATA;
@@ -375,6 +386,9 @@ public class Metacustomer extends JFrame {
         } catch (JSONException | IOException ex) {
             System.out.println(ex.getMessage());
         }
+        a11.addActionListener((ActionEvent e) -> {
+            new Profile().setVisible(true);
+        });
 
         a13.addActionListener((ActionEvent e) -> {
             HandlePreference pref = new HandlePreference();
@@ -397,7 +411,7 @@ public class Metacustomer extends JFrame {
 
         jMenu1.add(a1);
         jMenu1.add(a11);
-        jMenu1.add(a15);
+//        jMenu1.add(a15);
         jMenu1.add(a13);
 
         JMenuItem b1 = new JMenuItem("New Order");
@@ -427,20 +441,20 @@ public class Metacustomer extends JFrame {
 
         f9.add(redwhite);
         f9.add(redblue);
-        f9.add(redgreen);
-        JMenu volumes = new JMenu("Volumes");
-        JMenuItem showVolumes = new JMenuItem("Show");
-        JMenuItem hideVolumes = new JMenuItem("Hide");
-
-        showVolumes.addActionListener((e) -> {
-            Helper.updateBrowserChartThroughJava("show-volume", "true");
-        });
-        hideVolumes.addActionListener((e) -> {
-            Helper.updateBrowserChartThroughJava("show-volume", "false");
-        });
-
-        volumes.add(showVolumes);
-        volumes.add(hideVolumes);
+//        f9.add(redgreen);
+//        JMenu volumes = new JMenu("Volumes");
+//        JMenuItem showVolumes = new JMenuItem("Show");
+//        JMenuItem hideVolumes = new JMenuItem("Hide");
+//
+//        showVolumes.addActionListener((e) -> {
+//            Helper.updateBrowserChartThroughJava("show-volume", "true");
+//        });
+//        hideVolumes.addActionListener((e) -> {
+//            Helper.updateBrowserChartThroughJava("show-volume", "false");
+//        });
+//
+//        volumes.add(showVolumes);
+//        volumes.add(hideVolumes);
         JMenu tickVolume = new JMenu("Tick volume");
         JMenuItem showTickVolume = new JMenuItem("Show");
         JMenuItem hideTickVolume = new JMenuItem("Hide");
@@ -523,7 +537,7 @@ public class Metacustomer extends JFrame {
         jMenu7.addSeparator();
         jMenu7.add(f8);
         jMenu7.add(f9);
-        jMenu7.add(volumes);
+//        jMenu7.add(volumes);
         jMenu7.add(tickVolume);
     }
 
