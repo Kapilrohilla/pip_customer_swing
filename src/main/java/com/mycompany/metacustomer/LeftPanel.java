@@ -82,7 +82,9 @@ public class LeftPanel extends javax.swing.JPanel {
                     for (int i = 0; i < watchlistData.size(); i++) {
                         String watchlistsymbol = watchlistData.get(i).getString("symbol");
                         String responseSymbol = response.getString("symbol");
+                        System.out.println("Symbol: " + responseSymbol);
                         if (watchlistsymbol.equals(responseSymbol)) {
+                            System.out.println("Symbol: " + responseSymbol);
                             String bid = response.getString("bid");
                             String ask = response.getString("ask");
                             String volume = response.getString("volume");
@@ -161,6 +163,7 @@ public class LeftPanel extends javax.swing.JPanel {
 //                System.out.println("listening socket: " + jso.toString());
                 try {
                     response = jso.getJSONObject("newMessage");
+                    System.out.println("Size: " + watchlistData.size());
                     for (int i = 0; i < watchlistData.size(); i++) {
                         String watchlistsymbol = watchlistData.get(i).getString("symbol");
                         String responseSymbol = response.getString("symbol");

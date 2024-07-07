@@ -364,7 +364,6 @@ public class OrderRightPanel extends javax.swing.JPanel {
 //                    if (!validationforPendingOrders()) {
 //                        return;
 //                    }
-
 //                    String apiUrl = APIs.NEW_ORDER;
                     String symbol = jComboBox1.getSelectedItem().toString();
                     String typeValue = jComboBox2.getSelectedItem().toString();
@@ -401,8 +400,12 @@ public class OrderRightPanel extends javax.swing.JPanel {
                     jso.put("qty", qty);
                     jso.put("price", price);
                     jso.put("limit", limit);
-                    jso.put("stop_loss", stop_loss);
-                    jso.put("take_profit", take_profit);
+                    if (!(stop_loss.equals("0.0") || stop_loss.equals("0") || stop_loss.equals(""))) {
+                        jso.put("stop_loss", stop_loss);
+                    }
+                    if (!(take_profit.equals("0.0") || take_profit.equals("0") || take_profit.equals(""))) {
+                        jso.put("take_profit", take_profit);
+                    }
                     jso.put("comment", comment);
                     jso.put("expiration", expiration);
                     jso.put("token", Metacustomer.loginToken);
@@ -464,8 +467,13 @@ public class OrderRightPanel extends javax.swing.JPanel {
                     jso.put("type", type);
                     jso.put("exc_type", exc_type);
                     jso.put("qty", qty);
-                    jso.put("stop_loss", stop_loss);
-                    jso.put("take_profit", take_profit);
+                    if (!(stop_loss.equals("0.0") || stop_loss.equals("0") || stop_loss.equals(""))) {
+                        jso.put("stop_loss", stop_loss);
+                    }
+                    if (!(take_profit.equals("0.0") || take_profit.equals("0") || take_profit.equals(""))) {
+                        jso.put("take_profit", take_profit);
+                    }
+
                     jso.put("comment", comment);
                     jso.put("token", Metacustomer.loginToken);
 
@@ -530,8 +538,13 @@ public class OrderRightPanel extends javax.swing.JPanel {
                     jso.put("type", type);
                     jso.put("exc_type", exc_type);
                     jso.put("qty", qty);
-                    jso.put("stop_loss", stop_loss);
-                    jso.put("take_profit", take_profit);
+                    if (!(stop_loss.equals("0.0") || stop_loss.equals("0") || stop_loss.equals(""))) {
+                        jso.put("stop_loss", stop_loss);
+                    }
+                    if (!(take_profit.equals("0.0") || take_profit.equals("0") || take_profit.equals(""))) {
+                        jso.put("take_profit", take_profit);
+                    }
+
                     jso.put("comment", comment);
                     jso.put("token", Metacustomer.loginToken);
 
@@ -590,8 +603,13 @@ public class OrderRightPanel extends javax.swing.JPanel {
         jso.put("qty", qty);
         jso.put("price", price);
         jso.put("limit", limit);
-        jso.put("stop_loss", stop_loss);
-        jso.put("take_profit", take_profit);
+        if (!(stop_loss.equals("0.0") || stop_loss.equals("0") || stop_loss.equals(""))) {
+            jso.put("stop_loss", stop_loss);
+        }
+        if (!(take_profit.equals("0.0") || take_profit.equals("0") || take_profit.equals(""))) {
+            jso.put("take_profit", take_profit);
+        }
+
         jso.put("comment", comment);
         jso.put("expiration", expiration);
         jso.put("token", Metacustomer.loginToken);

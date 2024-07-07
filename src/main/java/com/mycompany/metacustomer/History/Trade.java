@@ -172,7 +172,7 @@ public class Trade extends javax.swing.JPanel {
                         price = newPosition.getDouble("price") + "";
                     } catch (JSONException ex) {
                         System.out.println(ex.getMessage());
-                        price = "0";
+                        price = "";
                     }
 
                     String stopLoss;
@@ -185,12 +185,12 @@ public class Trade extends javax.swing.JPanel {
                     try {
                         stopLoss = newPosition.getDouble("stopLoss") + "";
                     } catch (JSONException ex) {
-                        stopLoss = "0";
+                        stopLoss = "";
                     }
                     try {
                         takeProfit = newPosition.getDouble("takeProfit") + "";
                     } catch (JSONException ex) {
-                        takeProfit = "0";
+                        takeProfit = "";
                     }
 
                     try {
@@ -389,13 +389,13 @@ public class Trade extends javax.swing.JPanel {
 
                 String createdAt = Helper.getJSONString(jso, "createdAt");
                 double stopLoss = Helper.getJSONDouble(jso, "stopLoss");
-                String stopLossS = stopLoss + "";
+                String stopLossS = stopLoss > 0 ? stopLoss + "" : "";
                 double takeProfit = Helper.getJSONDouble(jso, "takeProfit");
-                String takeProfitS = takeProfit + "";
+                String takeProfitS = takeProfit > 0 ? takeProfit + "" : "";
                 double volume = Helper.getJSONDouble(jso, "volume");
-                String volumeS = volume + "";
+                String volumeS = volume > 0 ? volume + "" : "";
                 double price = Helper.getJSONDouble(jso, "price");
-                String priceS = price + "";
+                String priceS = price > 0 ? price + "" : "";
                 String ticket = Helper.getJSONString(jso, "ticket");
 //                String ticket = jso.getString("ticket");
 

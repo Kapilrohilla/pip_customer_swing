@@ -55,7 +55,7 @@ public class BottomPanel extends javax.swing.JPanel {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
-        
+
         String token = Metacustomer.loginToken;
         if (token == null) {
             System.out.println("token not found token: " + token);
@@ -131,6 +131,7 @@ public class BottomPanel extends javax.swing.JPanel {
                         try {
                             String apiData = getData(APIs.GET_USER_ORDERS);
                             JSONArray apiJSA = new JSONArray(apiData);
+                            System.out.println("apiJSA: " + apiJSA);
 //                            Order.orderDataJSNArr = apiJSA;
 //                            Order.setTableData();
                         } catch (JSONException ex) {

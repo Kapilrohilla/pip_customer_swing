@@ -153,8 +153,17 @@ public class AddSymbol2BidAsk extends javax.swing.JFrame {
                 newRow.add("");
                 newRow.add("");
                 LeftPanel.tableModel.addRow(newRow);
-                JSONObject newSymbolData = responseJSON.getJSONObject("symbolData");
+                System.out.println(responseJSON);
+                // JSONObject newSymbolData = responseJSON.getJSONObject("symbolData");
+                System.out.println("FUCK: " + LeftPanel.watchlistData.size());
+                JSONObject newSymbolData = new JSONObject();
+                newSymbolData.put("symbol", selectedSymbol);
+                newSymbolData.put("bid", 0);
+                newSymbolData.put("ask", 0);
+                newSymbolData.put("volumw", 1);
                 LeftPanel.watchlistData.add(newSymbolData);
+                System.out.println("FUCK: " + LeftPanel.watchlistData.size());
+
             }
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
