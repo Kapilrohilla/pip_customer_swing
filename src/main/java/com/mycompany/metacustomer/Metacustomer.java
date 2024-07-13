@@ -455,17 +455,17 @@ public class Metacustomer extends JFrame {
 //
 //        volumes.add(showVolumes);
 //        volumes.add(hideVolumes);
-        JMenu tickVolume = new JMenu("Tick volume");
-        JMenuItem showTickVolume = new JMenuItem("Show");
-        JMenuItem hideTickVolume = new JMenuItem("Hide");
-        showTickVolume.addActionListener((e) -> {
-            Helper.updateBrowserChartThroughJava("show-tick-volume", "true");
-        });
-        hideTickVolume.addActionListener((e) -> {
-            Helper.updateBrowserChartThroughJava("show-tick-volume", "false");
-        });
-        tickVolume.add(showTickVolume);
-        tickVolume.add(hideTickVolume);
+//        JMenu tickVolume = new JMenu("Tick volume");
+//        JMenuItem showTickVolume = new JMenuItem("Show");
+//        JMenuItem hideTickVolume = new JMenuItem("Hide");
+//        showTickVolume.addActionListener((e) -> {
+//            Helper.updateBrowserChartThroughJava("show-tick-volume", "true");
+//        });
+//        hideTickVolume.addActionListener((e) -> {
+//            Helper.updateBrowserChartThroughJava("show-tick-volume", "false");
+//        });
+//        tickVolume.add(showTickVolume);
+//        tickVolume.add(hideTickVolume);
 
         // chart -> timeframes
         JMenuItem f8a = new JMenuItem("1 Minute");
@@ -538,7 +538,7 @@ public class Metacustomer extends JFrame {
         jMenu7.add(f8);
         jMenu7.add(f9);
 //        jMenu7.add(volumes);
-        jMenu7.add(tickVolume);
+//        jMenu7.add(tickVolume);
     }
 
     public Metacustomer(Socket socket) {

@@ -65,89 +65,6 @@ public class LeftPanel extends javax.swing.JPanel {
         }
     }
 
-    void copiedSocket() throws Exception {
-        Socket socket = Metacustomer.socket;
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                System.out.println("Connected to server.");
-            }
-        }).on("newMessage", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject jso = (JSONObject) args[0];
-                JSONObject response;
-                try {
-                    response = jso.getJSONObject("newMessage");
-                    for (int i = 0; i < watchlistData.size(); i++) {
-                        String watchlistsymbol = watchlistData.get(i).getString("symbol");
-                        String responseSymbol = response.getString("symbol");
-                        System.out.println("Symbol: " + responseSymbol);
-                        if (watchlistsymbol.equals(responseSymbol)) {
-                            System.out.println("Symbol: " + responseSymbol);
-                            String bid = response.getString("bid");
-                            String ask = response.getString("ask");
-                            String volume = response.getString("volume");
-                            String[] newRowData = {responseSymbol, bid, ask, volume};
-                            for (int j = 0; j < tableModel.getColumnCount(); j++) {
-                                try {
-                                    tableModel.setValueAt(newRowData[j], i, j);
-                                } catch (ArrayIndexOutOfBoundsException ex) {
-                                }
-
-                            }
-                        }
-                    }
-                } catch (JSONException ex) {
-                    Logger.getLogger(LeftPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-
-        socket.connect();
-    }
-
-    void copiedSocket2() throws Exception {
-        Socket socket = Metacustomer.socket;
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                System.out.println("Connected to server.");
-            }
-        }).on("newMeta", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject jso = (JSONObject) args[0];
-                JSONObject response;
-//                System.out.println("listening socket: " + jso.toString());
-                try {
-                    response = jso.getJSONObject("newMessage");
-                    for (int i = 0; i < watchlistData.size(); i++) {
-                        String watchlistsymbol = watchlistData.get(i).getString("symbol");
-                        String responseSymbol = response.getString("symbol");
-                        if (watchlistsymbol.equals(responseSymbol)) {
-                            String bid = response.getString("bid");
-                            String ask = response.getString("ask");
-                            String volume = response.getString("volume");
-                            String[] newRowData = {responseSymbol, bid, ask, volume};
-                            for (int j = 0; j < tableModel.getColumnCount(); j++) {
-                                try {
-                                    tableModel.setValueAt(newRowData[j], i, j);
-                                } catch (ArrayIndexOutOfBoundsException ex) {
-                                }
-
-                            }
-                        }
-                    }
-                } catch (JSONException ex) {
-                    Logger.getLogger(LeftPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-
-        socket.connect();
-    }
-
     void copiedSocke3() throws Exception {
         Socket socket = Metacustomer.socket;
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -160,10 +77,8 @@ public class LeftPanel extends javax.swing.JPanel {
             public void call(Object... args) {
                 JSONObject jso = (JSONObject) args[0];
                 JSONObject response;
-//                System.out.println("listening socket: " + jso.toString());
                 try {
                     response = jso.getJSONObject("newMessage");
-                    System.out.println("Size: " + watchlistData.size());
                     for (int i = 0; i < watchlistData.size(); i++) {
                         String watchlistsymbol = watchlistData.get(i).getString("symbol");
                         String responseSymbol = response.getString("symbol");
@@ -171,7 +86,9 @@ public class LeftPanel extends javax.swing.JPanel {
                             String bid = response.getString("bid");
                             String ask = response.getString("ask");
                             String volume = response.getString("volume");
-                            String[] newRowData = {responseSymbol, bid, ask, volume};
+                            String vol2display = String.format("%.2f", volume);
+                            
+                            String[] newRowData = {responseSymbol, bid, ask, vol2display};
                             for (int j = 0; j < tableModel.getColumnCount(); j++) {
                                 try {
                                     tableModel.setValueAt(newRowData[j], i, j);
