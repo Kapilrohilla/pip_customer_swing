@@ -93,7 +93,9 @@ public class Position extends javax.swing.JPanel {
                 double volume = Helper.getJSONDouble(json, "volume");
                 double price = Helper.getJSONDouble(json, "price");
                 double sl = Helper.getJSONDouble(json, "stopLoss");
+                String sl2display = sl > 0 ? sl + "" : "";
                 double tp = Helper.getJSONDouble(json, "takeProfit");
+                String tp2display = tp > 0 ? tp + "" : "";
                 double comission = Helper.getJSONDouble(json, "comission");
                 double fee = Helper.getJSONDouble(json, "fee");
                 double swap = Helper.getJSONDouble(json, "swap");
@@ -104,7 +106,7 @@ public class Position extends javax.swing.JPanel {
                 String comment = Helper.getJSONString(json, "comment");
                 String changePercent = String.format("%.2f", closePrice / price * 100 - 100);
 
-                String[] rowData = {time, symbol, ticket, type, volume + "", price + "", sl + "", tp + "", closingTime, closePrice + "", comission + "", fee + "", swap + "", changePercent + "", formattedProfit, comment};
+                String[] rowData = {time, symbol, ticket, type, volume + "", price + "",sl2display, tp2display, closingTime, closePrice + "", comission + "", fee + "", swap + "", changePercent + "", formattedProfit, comment};
                 model.addRow(rowData);
             } catch (JSONException ex) {
                 System.out.println("Error: " + ex.getMessage());

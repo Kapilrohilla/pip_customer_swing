@@ -20,10 +20,8 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import okhttp3.Call;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -480,7 +478,7 @@ public class OrderRightPanel extends javax.swing.JPanel {
                     socket.emit("newOrder", jso.toString());
                 } catch (JSONException ex) {
                     System.out.println("exception occurred in order right panel");
-                    System.out.println(ex.getMessage());
+                    System.out.println(ex);
                 }
 
 //                    System.out.println("sell send: " + jso);

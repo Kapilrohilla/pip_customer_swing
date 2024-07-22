@@ -41,7 +41,7 @@ import org.json.JSONObject;
  * @author kapilrohilla
  */
 public class Trade extends javax.swing.JPanel {
-
+    
     public static double updatedbal, eq, mmm;
     public static JLabel j1;
     private boolean isBalanceSet = false;
@@ -73,13 +73,13 @@ public class Trade extends javax.swing.JPanel {
                 System.out.println("JSON exception occurred in socket connection at trade panel");
                 System.out.println(ex);
             }
-
+            
         } catch (JSONException ex) {
             System.out.println("exception occurred in table funciton of trade panel");
             System.out.println(ex);
         }
     }
-
+    
     final void listenGetOrderEvent() {
         socket.on("getOrder", new Emitter.Listener() {
             @Override
@@ -111,7 +111,7 @@ public class Trade extends javax.swing.JPanel {
                         System.out.println(ex.getMessage());
                         time = "";
                     }
-
+                    
                     String type;
                     try {
                         int typeNum = newPosition.getInt("type");
@@ -152,7 +152,7 @@ public class Trade extends javax.swing.JPanel {
                         System.out.println(ex.getMessage());
                         type = "NULL";
                     }
-
+                    
                     int status;
                     try {
                         status = newPosition.getInt("status");
@@ -160,7 +160,7 @@ public class Trade extends javax.swing.JPanel {
                         System.out.println(ex.getMessage());
                         status = 0;
                     }
-
+                    
                     String volume;
                     try {
                         volume = newPosition.getDouble("volume") + "";
@@ -174,14 +174,14 @@ public class Trade extends javax.swing.JPanel {
                         System.out.println(ex.getMessage());
                         price = "";
                     }
-
+                    
                     String stopLoss;
                     String takeProfit;
                     String swap = "";
                     String comment;
                     String profit = price;
                     String action = "Close position";
-
+                    
                     try {
                         stopLoss = newPosition.getDouble("stopLoss") + "";
                     } catch (JSONException ex) {
@@ -192,7 +192,7 @@ public class Trade extends javax.swing.JPanel {
                     } catch (JSONException ex) {
                         takeProfit = "";
                     }
-
+                    
                     try {
                         comment = newPosition.getString("comment");
                         if ("null".equals(comment)) {
@@ -201,7 +201,7 @@ public class Trade extends javax.swing.JPanel {
                     } catch (JSONException ex) {
                         comment = "";
                     }
-
+                    
                     Vector<String> newRow = new Vector();
                     newRow.add(symbol);
                     newRow.add(ticket);
@@ -227,17 +227,16 @@ public class Trade extends javax.swing.JPanel {
                     System.out.println("exception occurred in newOrder event in Trade panel");
                     System.out.println(ex.getMessage());
                 }
-
+                
             }
         });
     }
-
+    
     final void listenPosData() {
         socket.on("posData", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject jso = (JSONObject) args[0];
-                System.out.println("posData: " + jso);
                 try {
                     double freeMargin = jso.getDouble("freeMargin");
                     double margin = jso.getDouble("margin");
@@ -269,20 +268,17 @@ public class Trade extends javax.swing.JPanel {
             }
         });
     }
-
+    
     final void listenPosProfit() {
         socket.on("posProfit", new Emitter.Listener() {
             @Override
             public void call(Object... os) {
                 JSONObject posProfit = (JSONObject) os[0];
-//                System.out.println("posProfit: " + posProfit);
                 try {
-//                    System.out.println("posProfit: " + posProfit);
                     double profit = posProfit.getDouble("profit");
-//                    System.out.println("profit: " + profit);
                     String positionId = posProfit.getString("positionId");
                     double currentPrice = posProfit.getDouble("currentPrice");
-
+                    
                     for (int i = 0; i < watchlistData.size(); i++) {
                         JSONObject positionJSON = watchlistData.get(i);
                         String watchPositionId = positionJSON.getString("_id");
@@ -300,7 +296,7 @@ public class Trade extends javax.swing.JPanel {
             }
         });
     }
-
+    
     final String getUserData() {
         OkHttpClient client = new OkHttpClient();
         String url = APIs.USER;
@@ -311,7 +307,7 @@ public class Trade extends javax.swing.JPanel {
                 .header("Authorization", token)
                 .build();
         Call call = client.newCall(request);
-
+        
         try {
             Response res = call.execute();
             return res.body().string();
@@ -320,7 +316,7 @@ public class Trade extends javax.swing.JPanel {
             return "";
         }
     }
-
+    
     final void setData() {
         String apiData = getUserData();
         System.out.println("apiData: " + apiData);
@@ -331,18 +327,15 @@ public class Trade extends javax.swing.JPanel {
             double credit = userData.getDouble("credit");
             double margin = userData.getDouble("margin");
             String user_id = userData.getString("email");
-            System.out.println(":::::::::::::::::::::");
-            System.out.println("user_id:  " + user_id);
-            System.out.println(":::::::::::::::::::::");
             jLabel6.setText(credit + "");
             jLabel8.setText(margin + "");
             jLabel2.setText(balance + "");
         } catch (JSONException ex) {
             System.out.println(ex.getMessage());
         }
-
+        
     }
-
+    
     public static void updateData() {
         updatedbal = Double.parseDouble(bal);
         int rows = Trade.model.getRowCount();
@@ -354,7 +347,7 @@ public class Trade extends javax.swing.JPanel {
                 runningProfit += Double.parseDouble(value);
             }
         }
-
+        
         eq = updatedbal + runningProfit;
         String equity = "Equity: " + String.format("%.2f", eq);
         if (mmm != 0) {
@@ -363,11 +356,11 @@ public class Trade extends javax.swing.JPanel {
             String freemargin = String.format("%.2f", fm);
             j1.setText("Balance : " + bal + " Equity : " + eq + " Margin : " + mmm + " FreeMargin : " + freemargin + " Level : " + levelper);
         }
-
+        
     }
-
+    
     private void table() throws JSONException {
-
+        
         String[] columns = {"Symbol", "Ticket", "Time", "type", "Volume", "Price", "StopLoss", "TakeProfit", "Swap", "Comment", "Current Price", "Profit", "Action"};
         for (String column : columns) {
             model.addColumn(column);
@@ -383,10 +376,10 @@ public class Trade extends javax.swing.JPanel {
 
 //                String symbol = jso.getString("symbol");
                 String symbol = Helper.getJSONString(jso, "symbol");
-
+                
                 int typeNum = Helper.getJSONInt(jso, "type");
                 String type = Helper.getMappedOrderType(typeNum);
-
+                
                 String createdAt = Helper.getJSONString(jso, "createdAt");
                 double stopLoss = Helper.getJSONDouble(jso, "stopLoss");
                 String stopLossS = stopLoss > 0 ? stopLoss + "" : "";
@@ -404,13 +397,13 @@ public class Trade extends javax.swing.JPanel {
                     String year = createdAt.substring(0, 3);
                     String month = createdAt.substring(5, 6);
                     String day = createdAt.substring(8, 9);
-
+                    
                     time = day + "/" + month + "/" + year;
                 } catch (Exception ex) {
                     System.out.println("error occurred");
                     time = "";
                 }
-
+                
                 String swap = "";
                 String comment;
                 try {
@@ -434,7 +427,7 @@ public class Trade extends javax.swing.JPanel {
         } catch (JSONException ex) {
             ex.getStackTrace();
         }
-
+        
         jTable1.setModel(model);
         JPopupMenu jp = new JPopupMenu();
         JMenuItem menuItem1 = new JMenuItem("New Order");
@@ -445,19 +438,19 @@ public class Trade extends javax.swing.JPanel {
         JMenuItem menuItem6 = new JMenuItem("Close Losing Positions");
         JMenuItem menuItem7 = new JMenuItem("Modify");
         jp.add(menuItem1);
-
+        
         jp.add(menuItem2);
-
+        
         jp.add(menuItem3);
-
+        
         jp.addSeparator();
-
+        
         jp.add(menuItem4);
-
+        
         jp.add(menuItem5);
-
+        
         jp.add(menuItem6);
-
+        
         jp.add(menuItem7);
         menuItem1.addActionListener(new ActionListener() {
             @Override
@@ -465,7 +458,7 @@ public class Trade extends javax.swing.JPanel {
             ) {
                 new OrderFrame().setVisible(true);
             }
-
+            
         });
         menuItem2.addActionListener(new ActionListener() {
             @Override
@@ -474,12 +467,13 @@ public class Trade extends javax.swing.JPanel {
                     JSONObject jso = watchlistData.get(selectedRow);
                     String symbol = Helper.getJSONString(jso, "symbol");
                     String ticket = Helper.getJSONString(jso, "ticket");
+                    String positionId = Helper.getJSONString(jso, "_id");
                     System.out.println(symbol + " " + ticket);
                     String initialVolume = (String) model.getValueAt(selectedRow, 4);
                     double initialVolumeD = Double.parseDouble(initialVolume);
-                    new PartiallyClosePosition(symbol, ticket, initialVolumeD).setVisible(true);
+                    new PartiallyClosePosition(symbol, ticket, initialVolumeD, positionId).setVisible(true);
                 }
-
+                
             }
         });
         menuItem7.addActionListener(new ActionListener() {
@@ -509,7 +503,7 @@ public class Trade extends javax.swing.JPanel {
                         .build();
                 OkHttpClient client = new OkHttpClient();
                 Call call = client.newCall(request);
-
+                
                 try {
                     Response res = call.execute();
                     System.out.println("res: " + res.body().toString());
@@ -523,7 +517,7 @@ public class Trade extends javax.swing.JPanel {
             }
         }
         );
-
+        
         menuItem5.addActionListener(
                 new ActionListener() {
             @Override
@@ -538,9 +532,9 @@ public class Trade extends javax.swing.JPanel {
                         ))
                         .build();
                 OkHttpClient client = new OkHttpClient();
-
+                
                 Call call = client.newCall(request);
-
+                
                 try {
                     Response res = call.execute();
                     System.out.println("res: " + res.body().toString());
@@ -554,7 +548,7 @@ public class Trade extends javax.swing.JPanel {
             }
         }
         );
-
+        
         menuItem6.addActionListener(
                 new ActionListener() {
             @Override
@@ -569,9 +563,9 @@ public class Trade extends javax.swing.JPanel {
                         ))
                         .build();
                 OkHttpClient client = new OkHttpClient();
-
+                
                 Call call = client.newCall(request);
-
+                
                 try {
                     Response res = call.execute();
                     System.out.println("res: " + res.body().toString());
@@ -585,14 +579,14 @@ public class Trade extends javax.swing.JPanel {
             }
         }
         );
-
+        
         jTable1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
                     jp.show(e.getComponent(), e.getX(), e.getY());
                 }
-
+                
                 selectedRow = jTable1.rowAtPoint(e.getPoint());
                 int selectedColumn = jTable1.columnAtPoint(e.getPoint());
                 int totalColumn = jTable1.getColumnCount();
@@ -600,10 +594,10 @@ public class Trade extends javax.swing.JPanel {
                 if (totalColumn - 1 == selectedColumn) {
                     try {
                         String positionId = watchlistData.get(selectedRow).getString("_id");
-
+                        
                         JSONObject rawBody = new JSONObject();
                         rawBody.put("positionId", positionId);
-
+                        
                         try {
                             OkHttpClient client = new OkHttpClient.Builder().build();
                             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -611,7 +605,7 @@ public class Trade extends javax.swing.JPanel {
                             Request request = new Request.Builder().url(APIs.CLOSE_POSITION)
                                     .method("POST", body)
                                     .header("Authorization", Metacustomer.loginToken).build();
-
+                            
                             Response response = client.newCall(request).execute();
                             String responsebody = response.body().string();
                             System.out.println("responsedbody: " + responsebody);
@@ -626,22 +620,26 @@ public class Trade extends javax.swing.JPanel {
                                 jLabel2.setText(String.format("%.2f", balance));
                                 if ("sucess".equals(message)) {
                                     model.removeRow(selectedRow);
+                                    int rowCount = model.getRowCount();
+                                    if (rowCount < 1) {
+                                        jLabel14.setText("0.0");
+                                    }
                                 }
                             }
-
+                            
                         } catch (IOException ex) {
                             System.out.println("Exeption occurred while closing the Positoin using position id=" + positionId);
                         }
-
+                        
                     } catch (JSONException ex) {
                         System.out.println("exception occureed while fetching the _id for close position");
                     }
                 }
-
+                
             }
         }
         );
-
+        
         j1 = new JLabel();
 
 //        JScrollPane jscroll = new JScrollPane(jt);
@@ -649,14 +647,14 @@ public class Trade extends javax.swing.JPanel {
 //        add(j1, BorderLayout.NORTH);
 //        add(j1jTable1, BorderLayout.CENTER);
     }
-
+    
     private void listenClosePosition() {
         socket.on("closePosition", new Emitter.Listener() {
             @Override
             public void call(Object... os) {
 //                    try {
                 JSONObject closePositionResponse = (JSONObject) os[0];
-//                System.out.println("jso: " + closePositionResponse);
+                System.out.println("close position: " + closePositionResponse);
                 try {
                     String positionId = closePositionResponse.getString("positionId");
                     for (int i = 0; i < watchlistData.size(); i++) {
@@ -678,7 +676,7 @@ public class Trade extends javax.swing.JPanel {
             }
         });
     }
-
+    
     final String getData() {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -690,25 +688,26 @@ public class Trade extends javax.swing.JPanel {
         if (token == null) {
             return "";
         }
-
+        
         Request request = new Request.Builder()
                 .url(url)
                 .header("Authorization", token)
                 .build();
-
+        
         Call call = client.newCall(request);
-
+        
         try {
             Response res = call.execute();
             System.out.println("res: " + res.message());
             return res.body().string();
+            
         } catch (IOException e) {
             System.out.println("Runtime error: deals");
             System.out.println("e" + e);
             return "";
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

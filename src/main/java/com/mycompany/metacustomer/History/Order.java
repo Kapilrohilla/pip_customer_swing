@@ -70,11 +70,13 @@ public class Order extends javax.swing.JPanel {
                 double volume = Helper.getJSONDouble(order, "volume");
                 double price = Helper.getJSONDouble(order, "price");
                 double sl = Helper.getJSONDouble(order, "stopLoss");
+                String sl2display = sl > 0 ? sl + "" :"";
                 double tp = Helper.getJSONDouble(order, "takeProfit");
+                String tp2display = tp > 0 ? tp + "" : "";
                 String ctime = Helper.getJSONString(order, "updatedAt");
                 String state = "";
                 String comment = Helper.getJSONString(order, "comment");
-                String[] rowData = {time, symbol, ticket, type, volume + "", price + "", sl + "", tp + "", ctime, state, comment};
+                String[] rowData = {time, symbol, ticket, type, volume + "", price + "", sl2display ,tp2display, ctime, state, comment};
                 model.addRow(rowData);
             } catch (JSONException ex) {
                 System.out.println(ex.getMessage());

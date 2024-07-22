@@ -83,19 +83,24 @@ public class LeftPanel extends javax.swing.JPanel {
                         String watchlistsymbol = watchlistData.get(i).getString("symbol");
                         String responseSymbol = response.getString("symbol");
                         if (watchlistsymbol.equals(responseSymbol)) {
-                            String bid = response.getString("bid");
-                            String ask = response.getString("ask");
-                            String volume = response.getString("volume");
-                            String vol2display = String.format("%.2f", volume);
-                            
-                            String[] newRowData = {responseSymbol, bid, ask, vol2display};
-                            for (int j = 0; j < tableModel.getColumnCount(); j++) {
-                                try {
-                                    tableModel.setValueAt(newRowData[j], i, j);
-                                } catch (ArrayIndexOutOfBoundsException ex) {
-                                }
+                            try {
+                                String bid = response.getString("bid");
+                                String ask = response.getString("ask");
+                                String volume = response.getString("volume");
+                               // String vol2display = String.format("%.2f", volume);
 
+                                String[] newRowData = {responseSymbol, bid, ask, volume};
+                                for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                                    try {
+                                        tableModel.setValueAt(newRowData[j], i, j);
+                                    } catch (ArrayIndexOutOfBoundsException ex) {
+                                    }
+                                }
+                            } catch (JSONException ex) {
+                                System.out.println("::::::::::::::::EXCEPTION:::::::");
+                                System.out.println(ex.getMessage());
                             }
+
                         }
                     }
                 } catch (JSONException ex) {
@@ -168,6 +173,7 @@ public class LeftPanel extends javax.swing.JPanel {
                 symbol = obj.getString("symbol");
                 bid = obj.getDouble("bid") + "";
                 ask = obj.getDouble("ask") + "";
+                // volume = String.format("%.2f", obj.getDouble("changePercent") + "");
                 volume = obj.getDouble("changePercent") + "";
             } catch (JSONException ex) {
 

@@ -98,9 +98,9 @@ public class Deals extends javax.swing.JPanel {
             double price = Helper.getJSONDouble(jso, "price");
             String price2Display = String.format("%.2f", price);
             double stopLoss = Helper.getJSONDouble(jso, "stopLoss");
-            String stopLoss2Display = String.format("%.2f", stopLoss);
+            String stopLoss2Display = stopLoss > 0 ?  String.format("%.2f", stopLoss) : "";
             double takeProfit = Helper.getJSONDouble(jso, "takeProfit");
-            String takeProfit2Display = String.format("%.2f", takeProfit);
+            String takeProfit2Display = takeProfit > 0 ? String.format("%.2f", takeProfit) : "";
             double comission = Helper.getJSONDouble(jso, "comission");
             String comission2Display = String.format("%.2f", comission);
             totalCommission += comission;

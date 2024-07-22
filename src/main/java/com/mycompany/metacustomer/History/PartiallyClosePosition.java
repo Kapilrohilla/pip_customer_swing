@@ -4,7 +4,16 @@
  */
 package com.mycompany.metacustomer.History;
 
+import com.mycompany.metacustomer.Metacustomer;
+import com.mycompany.metacustomer.Utility.APIs;
+import com.mycompany.metacustomer.Utility.ApiServices;
+import com.mycompany.metacustomer.Utility.Helper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.SpinnerNumberModel;
+import okhttp3.Response;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -18,17 +27,47 @@ public class PartiallyClosePosition extends javax.swing.JFrame {
      */
     String symbol, ticket;
     double initialVolume;
+    String positionId;
 
-    public PartiallyClosePosition(String symbol, String ticket, double initialVolume) {
+    public PartiallyClosePosition(String symbol, String ticket, double initialVolume, String positionId) {
         initComponents();
         this.symbol = symbol;
         this.ticket = ticket;
+        this.positionId = positionId;
         this.initialVolume = initialVolume;
         jLabel5.setText(symbol);
         jLabel6.setText(ticket);
         jLabel7.setText(this.initialVolume + "");
-        SpinnerNumberModel model = new SpinnerNumberModel(this.initialVolume, 0, this.initialVolume, 0.1);
+        SpinnerNumberModel model = new SpinnerNumberModel(this.initialVolume / 2, 0, this.initialVolume, 0.1);
         jSpinner1.setModel(model);
+    }
+
+    private void updateTradePanelTable(double vol2close) {
+        Vector<Vector> tableData = Trade.model.getDataVector();
+        for (int i = 0; i < tableData.size(); i++) {
+            Vector<String> rowData = tableData.get(i);
+            double volume = Double.parseDouble(rowData.get(4));
+            double finalVolume = volume - vol2close;
+            System.out.println("finalVolume: " + finalVolume);
+            Trade.model.setValueAt(finalVolume + "", i, 4);
+            Trade.model.fireTableRowsUpdated(i, i);
+        }
+//        ArrayList<JSONObject> tableData = new ArrayList<>();
+//        System.out.println(tableData.size());
+//        for (int i = 0; i < tableData.size(); i++) {
+//            System.out.println("working: ");
+//            JSONObject rowData = tableData.get(i);
+//            String id = Helper.getJSONString(rowData, "_id");
+//            System.out.println("_ID = " + id + " positionId: " + this.positionId);
+//            if (!id.equals(this.positionId)) {
+//                continue;
+//            }
+//            double initialVolume = (double) Trade.model.getValueAt(i, 4);
+//            System.out.println("initial volume: " + initialVolume);
+//
+//            Trade.model.setValueAt(initialVolume, i, 4);
+//            Trade.model.fireTableCellUpdated(i, 4);
+//        }
     }
 
     @SuppressWarnings("unchecked")
@@ -122,9 +161,42 @@ public class PartiallyClosePosition extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JSONObject payload = new JSONObject();
-//        payload.put("symbol", symbol);
-        jSpinner1.getValue();
+        try {
+            JSONObject payload = new JSONObject();
+            payload.put("positionId", positionId);
+            String pos2closeStr = jSpinner1.getValue().toString();
+            double pos2closeQty = Double.parseDouble(pos2closeStr);
+            System.out.println(positionId);
+            System.out.println(pos2closeQty);
+            payload.put("volume2Close", pos2closeQty);
+
+            String api = APIs.PARTIAL_CLOSE;
+            System.out.println(api);
+            ApiServices service = new ApiServices();
+
+            String token = Metacustomer.loginToken;
+
+            try {
+                Response res = service.postDataWithToken(api, payload, token);
+                if (res.isSuccessful()) {
+                    JSONObject responseObject = new JSONObject(res.body().string());
+                    String message = Helper.getJSONString(responseObject, "message");
+                    if (message.equals("sucess")) {
+                        double balance = Helper.getJSONDouble(responseObject, "balance");
+                        String balanceStr = String.format("%.2f", balance);
+                        Trade.jLabel2.setText(balanceStr);
+                        this.updateTradePanelTable(pos2closeQty);
+                        System.out.println("response success");
+                    }
+                }
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
+
+        } catch (JSONException ex) {
+            System.out.println(ex.getMessage());
+        }
+//        Response res = service.postDataWithToken();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

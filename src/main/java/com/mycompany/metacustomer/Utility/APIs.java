@@ -55,4 +55,6 @@ public class APIs {
     public static String SERVER_JSON = "https://rapidtrader.net/livesrvr/bfrehh34/kbhirr3ke/baselilerigh.json";
 
     public static String UPDATE_POSITION = BASE_URL + "update-position";
+    
+    public static String PARTIAL_CLOSE = BASE_URL + "partially-close-position";
 }
